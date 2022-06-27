@@ -12,8 +12,10 @@ public enum tileContents
 public class MapManager : MonoBehaviour
 {
     public Tile[,] map; //what the tile has and the gameobject it represents
-    Tile wallTile = new Tile(tileContents.WALL, null); //walls don't care about their gameobject
+    public int crateNum = 0;
+    Tile wallTile = new Tile(tileContents.WALL, null, null); //walls don't care about their gameobject
     [SerializeField] public Vector2Int zone; //add one to top right location. 0,0 is bottom left.
+    [SerializeField] public int turns;
     [SerializeField] GameObject objects;
     public Vector2Int playerLoc;
     // Start is called before the first frame update
@@ -24,7 +26,7 @@ public class MapManager : MonoBehaviour
         {
             for(int j = 0; j < zone.y; ++j)
             {
-                map[i, j] = new Tile(tileContents.EMPTY, null);
+                map[i, j] = new Tile(tileContents.EMPTY, null, null);
             }
         }
         for(int i = 0; i < zone.x; ++i) //Boundary walls are outline from 0,0 to zone.x,zone.y. These are not objects, just the tilemap, for efficency's sake.
@@ -40,15 +42,18 @@ public class MapManager : MonoBehaviour
             Debug.Log(go.position.x + " " + go.position.y);
             if (go.tag == "Player")
             {
-                map[(int)go.position.x, (int)go.position.y] = new Tile(tileContents.PLAYER, go.gameObject);
+                map[(int)go.position.x, (int)go.position.y] = new Tile(tileContents.PLAYER, go.gameObject, null);
                 playerLoc = new Vector2Int((int)go.position.x, (int)go.position.y);
             }
             else if (go.tag == "Wall")
                 map[(int)go.position.x, (int)go.position.y] = wallTile;
             else if (go.tag == "Block")
-                map[(int)go.position.x, (int)go.position.y] = new Tile(tileContents.BLOCK, go.gameObject);
+                map[(int)go.position.x, (int)go.position.y] = new Tile(tileContents.BLOCK, go.gameObject, null);
             else if (go.tag == "Crate")
-                map[(int)go.position.x, (int)go.position.y] = new Tile(tileContents.CRATE, go.gameObject);
+            {
+                map[(int)go.position.x, (int)go.position.y] = new Tile(tileContents.CRATE, go.gameObject, null);
+                crateNum++;
+            }
         }
     }
 }

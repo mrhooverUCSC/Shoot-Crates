@@ -6,6 +6,19 @@ using UnityEngine.SceneManagement;
 
 public class TitleManager : MonoBehaviour
 {
+    public static TitleManager Instance { get; private set; }
+    public static int level;
+    private void Awake()
+    {
+        if(Instance != null && Instance != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            Instance = this;
+        }
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -17,9 +30,13 @@ public class TitleManager : MonoBehaviour
     {
         
     }
-    public void EnterLevel(string level)
+    public void EnterLevel(int l)
     {
-        SceneManager.LoadScene("Level" + level);
+        level = l;
+        SceneManager.LoadScene("Level" + l.ToString());
     }
-
+    public void TitleScreen()
+    {
+        SceneManager.LoadScene("Title");
+    }
 }

@@ -7,6 +7,9 @@ TagManager:
   - Wall
   - Block
   - Crate
+  - Bullet
+  - VictoryCanvas
+  - LossCanvas
   layers:
   - Default
   - TransparentFX
