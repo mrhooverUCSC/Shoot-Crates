@@ -30,12 +30,9 @@ public class GameManager : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.X))
             {
-                if (mapM.map[mapM.playerLoc.x + 1, mapM.playerLoc.y].contents == tileContents.EMPTY)
-                {
-                    turn();
-                    mapM.map[mapM.playerLoc.x + 1, mapM.playerLoc.y] = new Tile(tileContents.EMPTY, null, Instantiate(bullet));
-                    mapM.map[mapM.playerLoc.x + 1, mapM.playerLoc.y].bullet.transform.position = new Vector3Int(mapM.playerLoc.x + 1, mapM.playerLoc.y, 0);
-                }
+                mapM.map[mapM.playerLoc.x, mapM.playerLoc.y] = new Tile(mapM.map[mapM.playerLoc.x, mapM.playerLoc.y].contents, mapM.map[mapM.playerLoc.x, mapM.playerLoc.y].block, Instantiate(bullet));
+                mapM.map[mapM.playerLoc.x, mapM.playerLoc.y].bullet.transform.position = new Vector3Int(mapM.playerLoc.x, mapM.playerLoc.y, 0);
+                turn();
             }
             else if (Input.GetKeyDown(KeyCode.R))
             {
@@ -43,167 +40,203 @@ public class GameManager : MonoBehaviour
             }
             else if (Input.GetKeyDown(KeyCode.DownArrow))
             {
-                Tile target = mapM.map[mapM.playerLoc.x, mapM.playerLoc.y - 1];
-                //Debug.Log("Target: " + target.contents);
-                //Debug.Log(mapM.playerLoc.x + ", " + (mapM.playerLoc.y - 1));
-                Tile targetOver;
-                try { targetOver = mapM.map[mapM.playerLoc.x, mapM.playerLoc.y - 2]; }
-                catch { targetOver = wallTile; }
-                //Debug.Log("TargetOver: " + target.contents);
-                //Debug.Log(mapM.playerLoc.x + ", " + (mapM.playerLoc.y - 1));
-
-                Vector2Int pos = mapM.playerLoc;
-                //Debug.Log(pos + " " + target.contents);
-                if (target.contents == tileContents.EMPTY)
+                List<Tile> tiles = new List<Tile>();
+                List<Vector2Int> locations = new List<Vector2Int>();
+                for(int i = 0; true; i++)
                 {
-                    turn();
-                    mapM.map[pos.x, pos.y - 1] = mapM.map[pos.x, pos.y]; //move player over 
-                    mapM.map[pos.x, pos.y] = emptyTile; //replace with empty 
-                    mapM.playerLoc = new Vector2Int(pos.x, pos.y - 1); //save new player location
-                    mapM.map[pos.x, pos.y - 1].block.transform.position = mapM.map[pos.x, pos.y - 1].block.transform.position + Vector3.down; //move player visually
+                    try{ 
+                        tiles.Add(mapM.map[mapM.playerLoc.x, mapM.playerLoc.y - i]);
+                        locations.Add(new Vector2Int(mapM.playerLoc.x, mapM.playerLoc.y - i));
+                    }
+                    catch { break; }
                 }
-                else if ((target.contents == tileContents.BLOCK || target.contents == tileContents.CRATE) && targetOver.contents == tileContents.EMPTY)
-                {
-                    turn();
-                    mapM.map[pos.x, pos.y - 2] = mapM.map[pos.x, pos.y - 1]; //move block over
-                    mapM.map[pos.x, pos.y - 1] = mapM.map[pos.x, pos.y]; //move player over 
-                    mapM.map[pos.x, pos.y] = emptyTile; //replace with empty 
-                    mapM.playerLoc = new Vector2Int(pos.x, pos.y - 1); //save new player location 
-                    mapM.map[pos.x, pos.y - 1].block.transform.position = mapM.map[pos.x, pos.y - 1].block.transform.position + Vector3.down; //move player visually
-                    mapM.map[pos.x, pos.y - 2].block.transform.position = mapM.map[pos.x, pos.y - 2].block.transform.position + Vector3.down; //move block visually
-                }
+                push(tiles, locations);
             }
             else if (Input.GetKeyDown(KeyCode.UpArrow))
             {
-                Tile target = mapM.map[mapM.playerLoc.x, mapM.playerLoc.y + 1];
-                //Debug.Log("Target: " + target.contents);
-                //Debug.Log(mapM.playerLoc.x + ", " + (mapM.playerLoc.y + 1));
-                Tile targetOver;
-                try { targetOver = mapM.map[mapM.playerLoc.x, mapM.playerLoc.y + 2]; }
-                catch { targetOver = wallTile; }
-                //Debug.Log("TargetOver: " + target.contents);
-                //Debug.Log(mapM.playerLoc.x + ", " + (mapM.playerLoc.y + 1));
-
-                Vector2Int pos = mapM.playerLoc;
-                //Debug.Log(pos + " " + target.contents);
-                if (target.contents == tileContents.EMPTY)
+                List<Tile> tiles = new List<Tile>();
+                List<Vector2Int> locations = new List<Vector2Int>();
+                for (int i = 0; true; i++)
                 {
-                    turn();
-                    mapM.map[pos.x, pos.y + 1] = mapM.map[pos.x, pos.y]; //move player over 
-                    mapM.map[pos.x, pos.y] = emptyTile; //replace with empty 
-                    mapM.playerLoc = new Vector2Int(pos.x, pos.y + 1); //save new player location
-                    mapM.map[pos.x, pos.y + 1].block.transform.position = mapM.map[pos.x, pos.y + 1].block.transform.position + Vector3.up; //move player visually
+                    try
+                    {
+                        tiles.Add(mapM.map[mapM.playerLoc.x, mapM.playerLoc.y + i]);
+                        locations.Add(new Vector2Int(mapM.playerLoc.x, mapM.playerLoc.y + i));
+                    }
+                    catch { break; }
                 }
-                else if ((target.contents == tileContents.BLOCK || target.contents == tileContents.CRATE) && targetOver.contents == tileContents.EMPTY)
-                {
-                    turn();
-                    mapM.map[pos.x, pos.y + 2] = mapM.map[pos.x, pos.y + 1]; //move block over
-                    mapM.map[pos.x, pos.y + 1] = mapM.map[pos.x, pos.y]; //move player over 
-                    mapM.map[pos.x, pos.y] = emptyTile; //replace with empty 
-                    mapM.playerLoc = new Vector2Int(pos.x, pos.y + 1); //save new player location 
-                    mapM.map[pos.x, pos.y + 1].block.transform.position = mapM.map[pos.x, pos.y + 1].block.transform.position + Vector3.up; //move player visually
-                    mapM.map[pos.x, pos.y + 2].block.transform.position = mapM.map[pos.x, pos.y + 2].block.transform.position + Vector3.up; //move block visually
-                }
+                push(tiles, locations);
             }
             else if (Input.GetKeyDown(KeyCode.RightArrow))
             {
-                Tile target = mapM.map[mapM.playerLoc.x + 1, mapM.playerLoc.y];
-                //Debug.Log("Target: " + target.contents);
-                //Debug.Log((mapM.playerLoc.x+1) + ", " + (mapM.playerLoc.y));
-                Tile targetOver;
-                try { targetOver = mapM.map[mapM.playerLoc.x + 2, mapM.playerLoc.y]; }
-                catch { targetOver = wallTile; }
-                //Debug.Log("TargetOver: " + target.contents);
-                //Debug.Log((mapM.playerLoc.x+1) + ", " + (mapM.playerLoc.y));
-
-                Vector2Int pos = mapM.playerLoc;
-                //Debug.Log(pos + " " + target.contents);
-                if (target.contents == tileContents.EMPTY)
+                List<Tile> tiles = new List<Tile>();
+                List<Vector2Int> locations = new List<Vector2Int>();
+                for (int i = 0; true; i++)
                 {
-                    turn();
-                    mapM.map[pos.x + 1, pos.y] = mapM.map[pos.x, pos.y]; //move player over 
-                    mapM.map[pos.x, pos.y] = emptyTile; //replace with empty 
-                    mapM.playerLoc = new Vector2Int(pos.x + 1, pos.y); //save new player location
-                    mapM.map[pos.x + 1, pos.y].block.transform.position = mapM.map[pos.x + 1, pos.y].block.transform.position + Vector3.right; //move player visually
+                    try
+                    {
+                        tiles.Add(mapM.map[mapM.playerLoc.x + i, mapM.playerLoc.y]);
+                        locations.Add(new Vector2Int(mapM.playerLoc.x + i, mapM.playerLoc.y));
+                    }
+                    catch { break; }
                 }
-                else if ((target.contents == tileContents.BLOCK || target.contents == tileContents.CRATE) && targetOver.contents == tileContents.EMPTY)
-                {
-                    turn();
-                    mapM.map[pos.x + 2, pos.y] = mapM.map[pos.x + 1, pos.y]; //move block over
-                    mapM.map[pos.x + 1, pos.y] = mapM.map[pos.x, pos.y]; //move player over 
-                    mapM.map[pos.x, pos.y] = emptyTile; //replace with empty 
-                    mapM.playerLoc = new Vector2Int(pos.x + 1, pos.y); //save new player location 
-                    mapM.map[pos.x + 1, pos.y].block.transform.position = mapM.map[pos.x + 1, pos.y].block.transform.position + Vector3.right; //move player visually
-                    mapM.map[pos.x + 2, pos.y].block.transform.position = mapM.map[pos.x + 2, pos.y].block.transform.position + Vector3.right; //move block visually
-                }
+                push(tiles, locations);
             }
             else if (Input.GetKeyDown(KeyCode.LeftArrow))
             {
-                Tile target = mapM.map[mapM.playerLoc.x - 1, mapM.playerLoc.y];
-                //Debug.Log("Target: " + target.contents);
-                //Debug.Log((mapM.playerLoc.x-1) + ", " + (mapM.playerLoc.y));
-                Tile targetOver;
-                try { targetOver = mapM.map[mapM.playerLoc.x - 2, mapM.playerLoc.y]; }
-                catch { targetOver = wallTile; }
-                //Debug.Log("TargetOver: " + target.contents);
-                //Debug.Log((mapM.playerLoc.x-1) + ", " + (mapM.playerLoc.y));
-
-                Vector2Int pos = mapM.playerLoc;
-                //Debug.Log(pos + " " + target.contents);
-                if (target.contents == tileContents.EMPTY)
+                List<Tile> tiles = new List<Tile>();
+                List<Vector2Int> locations = new List<Vector2Int>();
+                for (int i = 0; true; i++)
                 {
-                    turn();
-                    mapM.map[pos.x - 1, pos.y] = mapM.map[pos.x, pos.y]; //move player over 
-                    mapM.map[pos.x, pos.y] = emptyTile; //replace with empty 
-                    mapM.playerLoc = new Vector2Int(pos.x - 1, pos.y); //save new player location
-                    mapM.map[pos.x - 1, pos.y].block.transform.position = mapM.map[pos.x - 1, pos.y].block.transform.position + Vector3.left; //move player visually
+                    try
+                    {
+                        tiles.Add(mapM.map[mapM.playerLoc.x - i, mapM.playerLoc.y]);
+                        locations.Add(new Vector2Int(mapM.playerLoc.x - i, mapM.playerLoc.y));
+                    }
+                    catch { break; }
                 }
-                else if ((target.contents == tileContents.BLOCK || target.contents == tileContents.CRATE) && targetOver.contents == tileContents.EMPTY)
-                {
-                    turn();
-                    mapM.map[pos.x - 2, pos.y] = mapM.map[pos.x - 1, pos.y]; //move block over
-                    mapM.map[pos.x - 1, pos.y] = mapM.map[pos.x, pos.y]; //move player over 
-                    mapM.map[pos.x, pos.y] = emptyTile; //replace with empty 
-                    mapM.playerLoc = new Vector2Int(pos.x - 1, pos.y); //save new player location 
-                    mapM.map[pos.x - 1, pos.y].block.transform.position = mapM.map[pos.x - 1, pos.y].block.transform.position + Vector3.left; //move player visually
-                    mapM.map[pos.x - 2, pos.y].block.transform.position = mapM.map[pos.x - 2, pos.y].block.transform.position + Vector3.left; //move block visually
-                }
+                push(tiles, locations);
             }
+        }
+    }
 
+    private void push(List<Tile> tiles, List<Vector2Int> positions)
+    {
+        if (tiles.Count > 1 && tiles[1].contents == tileContents.EMPTY) 
+        {
+            mapM.map[positions[1].x, positions[1].y] = mapM.map[positions[0].x, positions[0].y]; //move player over 
+            mapM.map[positions[0].x, positions[0].y] = emptyTile; //replace with empty 
+            mapM.playerLoc = new Vector2Int(positions[1].x, positions[1].y); //save new player location
+            mapM.map[positions[1].x, positions[1].y].block.transform.position = new Vector3(positions[1].x, positions[1].y, 0); //move player visually
+            turn();
+        }
+        else if (tiles.Count > 2 && (tiles[1].contents == tileContents.BLOCK || tiles[1].contents == tileContents.CRATE) && tiles[2].contents == tileContents.EMPTY)
+        {
+            Debug.Log("push" + tiles[1].contents);
+            Debug.Log(mapM.playerLoc.x + " " + mapM.playerLoc.y);
+            mapM.map[positions[2].x, positions[2].y] = mapM.map[positions[1].x, positions[1].y]; //move block over
+            mapM.map[positions[1].x, positions[1].y] = mapM.map[positions[0].x, positions[0].y]; //move player over 
+            mapM.map[positions[0].x, positions[0].y] = emptyTile; //replace with empty 
+            mapM.playerLoc = new Vector2Int(positions[1].x, positions[1].y); //save new player location 
+            mapM.map[positions[1].x, positions[1].y].block.transform.position = new Vector3(positions[1].x, positions[1].y, 0); //move player visually
+            mapM.map[positions[2].x, positions[2].y].block.transform.position = new Vector3(positions[2].x, positions[2].y, 0); //move block visually
+            Debug.Log(mapM.playerLoc.x + " " + mapM.playerLoc.y);
+            turn();
+        }
+        else if(tiles.Count > 3 && tiles[1].contents == tileContents.CRATE && tiles[2].contents == tileContents.BLOCK && tiles[3].contents == tileContents.EMPTY)
+        {
+            Debug.Log("double push");
+            mapM.map[positions[3].x, positions[3].y] = mapM.map[positions[2].x, positions[2].y];
+            mapM.map[positions[2].x, positions[2].y] = mapM.map[positions[1].x, positions[1].y]; //move block over
+            mapM.map[positions[1].x, positions[1].y] = mapM.map[positions[0].x, positions[0].y]; //move player over 
+            mapM.map[positions[0].x, positions[0].y] = emptyTile; //replace with empty 
+            mapM.playerLoc = new Vector2Int(positions[1].x, positions[1].y); //save new player location 
+            mapM.map[positions[1].x, positions[1].y].block.transform.position = new Vector3(positions[1].x, positions[1].y, 0); //move player visually
+            mapM.map[positions[2].x, positions[2].y].block.transform.position = new Vector3(positions[2].x, positions[2].y, 0); //move block visually
+            mapM.map[positions[3].x, positions[3].y].block.transform.position = new Vector3(positions[3].x, positions[3].y, 0);
+            Debug.Log(mapM.playerLoc.x + " " + mapM.playerLoc.y);
+            turn();
+        }
+        else if(tiles.Count > 1 && tiles[1].contents == tileContents.BRIDGE)
+        {
+            int i = 1;
+            while(tiles[i].contents == tileContents.BRIDGE)
+            {
+                i++;
+            }
+            Debug.Log(tiles[i].contents);
+            if(tiles[i].contents == tileContents.EMPTY)
+            {
+                mapM.map[positions[i].x, positions[i].y] = mapM.map[positions[0].x, positions[0].y];
+                mapM.map[positions[0].x, positions[0].y] = emptyTile; //replace with empty 
+                mapM.playerLoc = new Vector2Int(positions[i].x, positions[i].y); //save new player location
+                mapM.map[positions[i].x, positions[i].y].block.transform.position = new Vector3(positions[i].x, positions[i].y, 0); //move player visually
+                turn();
+            }
         }
     }
 
     private void turn()
     {
-        turnsRemaining--;
-        turnText.text = "Turns Remaining: " + turnsRemaining.ToString();
         foreach (GameObject b in GameObject.FindGameObjectsWithTag("Bullet"))
         {
-            if(mapM.map[(int)b.transform.position.x + 1, (int)b.transform.position.y].contents == tileContents.EMPTY)
+            tileContents next = mapM.map[(int)b.transform.position.x + 1, (int)b.transform.position.y].contents;
+            Debug.Log(next);
+            if (next == tileContents.EMPTY || next == tileContents.BRIDGE)
             {
                 mapM.map[(int)b.transform.position.x + 1, (int)b.transform.position.y].bullet = b;
                 mapM.map[(int)b.transform.position.x, (int)b.transform.position.y].bullet = null;
                 b.transform.position = b.transform.position + Vector3.right;
             }
-            else if ((mapM.map[(int)b.transform.position.x + 1, (int)b.transform.position.y].contents == tileContents.WALL) || (mapM.map[(int)b.transform.position.x + 1, (int)b.transform.position.y].contents == tileContents.BLOCK))
+            else if ((next == tileContents.WALL) || (next == tileContents.BLOCK))
             {
                 mapM.map[(int)b.transform.position.x, (int)b.transform.position.y].bullet = null;
                 Destroy(b);
             }
-            else if(mapM.map[(int)b.transform.position.x + 1, (int)b.transform.position.y].contents == tileContents.CRATE)
+            else if(next == tileContents.CRATE)
             {
                 Destroy(mapM.map[(int)b.transform.position.x + 1, (int)b.transform.position.y].block);
                 mapM.map[(int)b.transform.position.x + 1, (int)b.transform.position.y] = emptyTile;
-                mapM.map[(int)b.transform.position.x, (int)b.transform.position.y].bullet = null;
-                Destroy(b);
+                mapM.map[(int)b.transform.position.x + 1, (int)b.transform.position.y].bullet = b;
+                b.transform.position = b.transform.position + Vector3.right;
                 mapM.crateNum--;
                 if(mapM.crateNum == 0)
                 {
                     victoryCanvas.SetActive(true);
                     status = gameStatus.STOP;
+                    mapM.player.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, .5f);
                 }
             }
         }
+        turnsRemaining--;
+        turnText.text = "Turns Remaining: " + turnsRemaining.ToString();
+        if(turnsRemaining == 0)
+        {
+            status = gameStatus.STOP;
+            mapM.player.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, .5f);
+            StartCoroutine(bulletEnd());
+        }
+    }
+    private IEnumerator bulletEnd()
+    {
+        if (GameObject.FindGameObjectsWithTag("Bullet").Length != 0)
+        {
+            yield return new WaitForSeconds(0.7f);
+            foreach (GameObject b in GameObject.FindGameObjectsWithTag("Bullet"))
+            {
+                tileContents next = mapM.map[(int)b.transform.position.x + 1, (int)b.transform.position.y].contents;
+                if (next == tileContents.EMPTY || next == tileContents.BRIDGE)
+                {
+                    mapM.map[(int)b.transform.position.x + 1, (int)b.transform.position.y].bullet = b;
+                    mapM.map[(int)b.transform.position.x, (int)b.transform.position.y].bullet = null;
+                    b.transform.position = b.transform.position + Vector3.right;
+                }
+                else if ((next == tileContents.WALL) || (next == tileContents.BLOCK))
+                {
+                    mapM.map[(int)b.transform.position.x, (int)b.transform.position.y].bullet = null;
+                    Destroy(b);
+                }
+                else if (next == tileContents.CRATE)
+                {
+                    Destroy(mapM.map[(int)b.transform.position.x + 1, (int)b.transform.position.y].block);
+                    mapM.map[(int)b.transform.position.x + 1, (int)b.transform.position.y] = emptyTile;
+                    mapM.map[(int)b.transform.position.x, (int)b.transform.position.y].bullet = null;
+                    Destroy(b);
+                    mapM.crateNum--;
+                    if (mapM.crateNum == 0)
+                    {
+                        victoryCanvas.SetActive(true);
+                        yield break;
+                    }
+                }
+            }
+            StartCoroutine(bulletEnd());
+        }
+        else
+        {
+            lossCanvas.SetActive(true);
+        }
+
     }
     public void nextLevel()
     {
@@ -213,6 +246,12 @@ public class GameManager : MonoBehaviour
     public void levelSelect()
     {
         TitleManager.Instance.TitleScreen();
+    }
+    public void loss()
+    {
+        lossCanvas.SetActive(true);
+        status = gameStatus.STOP;
+        mapM.player.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, .5f);
     }
     public void retry()
     {

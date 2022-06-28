@@ -7,7 +7,8 @@ public enum tileContents
     PLAYER, //controllable player
     CRATE, //objective, destroy these
     BLOCK, //no destroy, only push
-    WALL //cannot be moved
+    WALL, //cannot be moved
+    BRIDGE //can be jumped over in a line
 }
 public class MapManager : MonoBehaviour
 {
@@ -18,6 +19,7 @@ public class MapManager : MonoBehaviour
     [SerializeField] public int turns;
     [SerializeField] GameObject objects;
     public Vector2Int playerLoc;
+    public GameObject player;
     // Start is called before the first frame update
     void Start()
     {
@@ -39,11 +41,12 @@ public class MapManager : MonoBehaviour
         }
         foreach (Transform go in objects.GetComponentInChildren<Transform>())        //rip the objects into the map array
         {
-            Debug.Log(go.position.x + " " + go.position.y);
+            //Debug.Log(go.position.x + " " + go.position.y);
             if (go.tag == "Player")
             {
                 map[(int)go.position.x, (int)go.position.y] = new Tile(tileContents.PLAYER, go.gameObject, null);
                 playerLoc = new Vector2Int((int)go.position.x, (int)go.position.y);
+                player = go.gameObject;
             }
             else if (go.tag == "Wall")
                 map[(int)go.position.x, (int)go.position.y] = wallTile;
@@ -54,6 +57,8 @@ public class MapManager : MonoBehaviour
                 map[(int)go.position.x, (int)go.position.y] = new Tile(tileContents.CRATE, go.gameObject, null);
                 crateNum++;
             }
+            else if(go.tag == "Bridge")
+                map[(int)go.position.x, (int)go.position.y] = new Tile(tileContents.BRIDGE, go.gameObject, null);
         }
     }
 }

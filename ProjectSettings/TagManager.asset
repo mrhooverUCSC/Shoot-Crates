@@ -10,6 +10,7 @@ TagManager:
   - Bullet
   - VictoryCanvas
   - LossCanvas
+  - Bridge
   layers:
   - Default
   - TransparentFX
