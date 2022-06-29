@@ -154,6 +154,26 @@ public class GameManager : MonoBehaviour
                 turn();
             }
         }
+        else if(tiles.Count > 2 && (tiles[1].contents == tileContents.CRATE || tiles[1].contents == tileContents.BLOCK) && tiles[2].contents == tileContents.PIT)
+        {
+            bool crate = false;
+            if(tiles[1].contents == tileContents.CRATE)
+            {
+                crate = true;
+            }
+            Destroy(mapM.map[positions[2].x, positions[2].y].block);
+            mapM.map[positions[2].x, positions[2].y] = emptyTile; //move block over
+            Destroy(mapM.map[positions[1].x, positions[1].y].block);
+            mapM.map[positions[1].x, positions[1].y] = mapM.map[positions[0].x, positions[0].y]; //move player over 
+            mapM.map[positions[0].x, positions[0].y] = emptyTile; //replace with empty 
+            mapM.playerLoc = new Vector2Int(positions[1].x, positions[1].y); //save new player location 
+            mapM.map[positions[1].x, positions[1].y].block.transform.position = new Vector3(positions[1].x, positions[1].y, 0); //move player visually
+            if (crate)
+            {
+                breakCrate();
+            }
+            turn();
+        }
     }
 
     private void turn()
@@ -162,7 +182,7 @@ public class GameManager : MonoBehaviour
         {
             tileContents next = mapM.map[(int)b.transform.position.x + 1, (int)b.transform.position.y].contents;
             Debug.Log(next);
-            if (next == tileContents.EMPTY || next == tileContents.BRIDGE)
+            if (next == tileContents.EMPTY || next == tileContents.BRIDGE || next == tileContents.PIT)
             {
                 mapM.map[(int)b.transform.position.x + 1, (int)b.transform.position.y].bullet = b;
                 mapM.map[(int)b.transform.position.x, (int)b.transform.position.y].bullet = null;
@@ -179,13 +199,7 @@ public class GameManager : MonoBehaviour
                 mapM.map[(int)b.transform.position.x + 1, (int)b.transform.position.y] = emptyTile;
                 mapM.map[(int)b.transform.position.x + 1, (int)b.transform.position.y].bullet = b;
                 b.transform.position = b.transform.position + Vector3.right;
-                mapM.crateNum--;
-                if(mapM.crateNum == 0)
-                {
-                    victoryCanvas.SetActive(true);
-                    status = gameStatus.STOP;
-                    mapM.player.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, .5f);
-                }
+                breakCrate();
             }
         }
         turnsRemaining--;
@@ -205,7 +219,7 @@ public class GameManager : MonoBehaviour
             foreach (GameObject b in GameObject.FindGameObjectsWithTag("Bullet"))
             {
                 tileContents next = mapM.map[(int)b.transform.position.x + 1, (int)b.transform.position.y].contents;
-                if (next == tileContents.EMPTY || next == tileContents.BRIDGE)
+                if (next == tileContents.EMPTY || next == tileContents.BRIDGE || next == tileContents.PIT)
                 {
                     mapM.map[(int)b.transform.position.x + 1, (int)b.transform.position.y].bullet = b;
                     mapM.map[(int)b.transform.position.x, (int)b.transform.position.y].bullet = null;
@@ -220,8 +234,9 @@ public class GameManager : MonoBehaviour
                 {
                     Destroy(mapM.map[(int)b.transform.position.x + 1, (int)b.transform.position.y].block);
                     mapM.map[(int)b.transform.position.x + 1, (int)b.transform.position.y] = emptyTile;
+                    mapM.map[(int)b.transform.position.x + 1, (int)b.transform.position.y].bullet = b;
                     mapM.map[(int)b.transform.position.x, (int)b.transform.position.y].bullet = null;
-                    Destroy(b);
+                    b.transform.position = b.transform.position + Vector3.right;
                     mapM.crateNum--;
                     if (mapM.crateNum == 0)
                     {
@@ -237,6 +252,16 @@ public class GameManager : MonoBehaviour
             lossCanvas.SetActive(true);
         }
 
+    }
+    private void breakCrate()
+    {
+        mapM.crateNum--;
+        if (mapM.crateNum == 0)
+        {
+            victoryCanvas.SetActive(true);
+            status = gameStatus.STOP;
+            mapM.player.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, .5f);
+        }
     }
     public void nextLevel()
     {

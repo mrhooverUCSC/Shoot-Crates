@@ -8,7 +8,8 @@ public enum tileContents
     CRATE, //objective, destroy these
     BLOCK, //no destroy, only push
     WALL, //cannot be moved
-    BRIDGE //can be jumped over in a line
+    BRIDGE, //can be jumped over in a line
+    PIT //bullets go over, but can be filled instead to be removed
 }
 public class MapManager : MonoBehaviour
 {
@@ -59,6 +60,8 @@ public class MapManager : MonoBehaviour
             }
             else if(go.tag == "Bridge")
                 map[(int)go.position.x, (int)go.position.y] = new Tile(tileContents.BRIDGE, go.gameObject, null);
+            else if(go.tag == "Pit")
+                map[(int)go.position.x, (int)go.position.y] = new Tile(tileContents.PIT, go.gameObject, null);
         }
     }
 }

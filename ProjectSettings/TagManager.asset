@@ -11,6 +11,7 @@ TagManager:
   - VictoryCanvas
   - LossCanvas
   - Bridge
+  - Pit
   layers:
   - Default
   - TransparentFX
