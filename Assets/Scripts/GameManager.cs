@@ -172,7 +172,10 @@ public class GameManager : MonoBehaviour
             {
                 breakCrate();
             }
-            turn();
+            if(status != gameStatus.STOP)
+            {
+                turn();
+            }
         }
     }
 
