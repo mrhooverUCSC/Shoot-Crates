@@ -8,6 +8,7 @@ public class TitleManager : MonoBehaviour
 {
     public static TitleManager Instance { get; private set; }
     public static int level;
+    public static int highestLevel;
     private void Awake()
     {
         if(Instance != null && Instance != this)

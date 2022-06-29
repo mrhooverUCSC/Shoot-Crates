@@ -28,7 +28,7 @@ public class GameManager : MonoBehaviour
     {
         if(status == gameStatus.GO)
         {
-            if (Input.GetKeyDown(KeyCode.X))
+            if (Input.GetKeyDown(KeyCode.X) || Input.GetKeyDown(KeyCode.K))
             {
                 mapM.map[mapM.playerLoc.x, mapM.playerLoc.y] = new Tile(mapM.map[mapM.playerLoc.x, mapM.playerLoc.y].contents, mapM.map[mapM.playerLoc.x, mapM.playerLoc.y].block, Instantiate(bullet));
                 mapM.map[mapM.playerLoc.x, mapM.playerLoc.y].bullet.transform.position = new Vector3Int(mapM.playerLoc.x, mapM.playerLoc.y, 0);
@@ -38,7 +38,7 @@ public class GameManager : MonoBehaviour
             {
                 retry();
             }
-            else if (Input.GetKeyDown(KeyCode.DownArrow))
+            else if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S))
             {
                 List<Tile> tiles = new List<Tile>();
                 List<Vector2Int> locations = new List<Vector2Int>();
@@ -52,7 +52,7 @@ public class GameManager : MonoBehaviour
                 }
                 push(tiles, locations);
             }
-            else if (Input.GetKeyDown(KeyCode.UpArrow))
+            else if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W))
             {
                 List<Tile> tiles = new List<Tile>();
                 List<Vector2Int> locations = new List<Vector2Int>();
@@ -67,7 +67,7 @@ public class GameManager : MonoBehaviour
                 }
                 push(tiles, locations);
             }
-            else if (Input.GetKeyDown(KeyCode.RightArrow))
+            else if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D))
             {
                 List<Tile> tiles = new List<Tile>();
                 List<Vector2Int> locations = new List<Vector2Int>();
@@ -82,7 +82,7 @@ public class GameManager : MonoBehaviour
                 }
                 push(tiles, locations);
             }
-            else if (Input.GetKeyDown(KeyCode.LeftArrow))
+            else if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A))
             {
                 List<Tile> tiles = new List<Tile>();
                 List<Vector2Int> locations = new List<Vector2Int>();
@@ -252,7 +252,10 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            lossCanvas.SetActive(true);
+            if(mapM.crateNum != 0)
+            {
+                lossCanvas.SetActive(true);
+            }
         }
 
     }
