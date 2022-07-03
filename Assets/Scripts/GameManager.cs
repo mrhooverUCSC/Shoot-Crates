@@ -23,6 +23,11 @@ public class GameManager : MonoBehaviour
     {
         turnsRemaining = mapM.turns;
         turnText.text = "Turns Remaining: " + turnsRemaining.ToString();
+
+        if(TitleManager.level > TitleManager.highestLevel)
+        {
+            TitleManager.highestLevel = TitleManager.level;
+        }
     }
     void Update()
     {
@@ -113,14 +118,12 @@ public class GameManager : MonoBehaviour
         else if (tiles.Count > 2 && (tiles[1].contents == tileContents.BLOCK || tiles[1].contents == tileContents.CRATE) && tiles[2].contents == tileContents.EMPTY)
         {
             Debug.Log("push" + tiles[1].contents);
-            Debug.Log(mapM.playerLoc.x + " " + mapM.playerLoc.y);
             mapM.map[positions[2].x, positions[2].y] = mapM.map[positions[1].x, positions[1].y]; //move block over
             mapM.map[positions[1].x, positions[1].y] = mapM.map[positions[0].x, positions[0].y]; //move player over 
             mapM.map[positions[0].x, positions[0].y] = emptyTile; //replace with empty 
             mapM.playerLoc = new Vector2Int(positions[1].x, positions[1].y); //save new player location 
             mapM.map[positions[1].x, positions[1].y].block.transform.position = new Vector3(positions[1].x, positions[1].y, 0); //move player visually
             mapM.map[positions[2].x, positions[2].y].block.transform.position = new Vector3(positions[2].x, positions[2].y, 0); //move block visually
-            Debug.Log(mapM.playerLoc.x + " " + mapM.playerLoc.y);
             turn();
         }
         else if(tiles.Count > 3 && tiles[1].contents == tileContents.CRATE && tiles[2].contents == tileContents.BLOCK && tiles[3].contents == tileContents.EMPTY)
@@ -134,7 +137,6 @@ public class GameManager : MonoBehaviour
             mapM.map[positions[1].x, positions[1].y].block.transform.position = new Vector3(positions[1].x, positions[1].y, 0); //move player visually
             mapM.map[positions[2].x, positions[2].y].block.transform.position = new Vector3(positions[2].x, positions[2].y, 0); //move block visually
             mapM.map[positions[3].x, positions[3].y].block.transform.position = new Vector3(positions[3].x, positions[3].y, 0);
-            Debug.Log(mapM.playerLoc.x + " " + mapM.playerLoc.y);
             turn();
         }
         else if(tiles.Count > 1 && tiles[1].contents == tileContents.BRIDGE)
@@ -144,7 +146,6 @@ public class GameManager : MonoBehaviour
             {
                 i++;
             }
-            Debug.Log(tiles[i].contents);
             if(tiles[i].contents == tileContents.EMPTY)
             {
                 mapM.map[positions[i].x, positions[i].y] = mapM.map[positions[0].x, positions[0].y];
@@ -184,7 +185,6 @@ public class GameManager : MonoBehaviour
         foreach (GameObject b in GameObject.FindGameObjectsWithTag("Bullet"))
         {
             tileContents next = mapM.map[(int)b.transform.position.x + 1, (int)b.transform.position.y].contents;
-            Debug.Log(next);
             if (next == tileContents.EMPTY || next == tileContents.BRIDGE || next == tileContents.PIT)
             {
                 mapM.map[(int)b.transform.position.x + 1, (int)b.transform.position.y].bullet = b;
