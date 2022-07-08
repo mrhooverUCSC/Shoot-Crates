@@ -31,17 +31,17 @@ public class GameManager : MonoBehaviour
     }
     void Update()
     {
-        if(status == gameStatus.GO)
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            retry();
+        }
+        if (status == gameStatus.GO)
         {
             if (Input.GetKeyDown(KeyCode.X) || Input.GetKeyDown(KeyCode.K))
             {
                 mapM.map[mapM.playerLoc.x, mapM.playerLoc.y] = new Tile(mapM.map[mapM.playerLoc.x, mapM.playerLoc.y].contents, mapM.map[mapM.playerLoc.x, mapM.playerLoc.y].block, Instantiate(bullet));
                 mapM.map[mapM.playerLoc.x, mapM.playerLoc.y].bullet.transform.position = new Vector3Int(mapM.playerLoc.x, mapM.playerLoc.y, 0);
                 turn();
-            }
-            else if (Input.GetKeyDown(KeyCode.R))
-            {
-                retry();
             }
             else if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S))
             {
@@ -173,7 +173,12 @@ public class GameManager : MonoBehaviour
             {
                 breakCrate();
             }
-            if(status != gameStatus.STOP)
+            if(status == gameStatus.STOP)
+            {
+                turnsRemaining--;
+                turnText.text = "Turns Remaining: " + turnsRemaining.ToString();
+            }
+            else
             {
                 turn();
             }
