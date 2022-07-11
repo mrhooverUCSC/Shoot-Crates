@@ -269,9 +269,10 @@ public class GameManager : MonoBehaviour
         mapM.crateNum--;
         if (mapM.crateNum == 0)
         {
-            victoryCanvas.SetActive(true);
             status = gameStatus.STOP;
             mapM.player.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, .5f);
+            TitleManager.highestLevel++;
+            victoryCanvas.SetActive(true);
         }
     }
     public void nextLevel()
