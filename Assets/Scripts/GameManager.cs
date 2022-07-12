@@ -9,14 +9,17 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject bullet;
     [SerializeField] GameObject victoryCanvas; //maybe make one serializefield, and get by tag/child in it?
     [SerializeField] GameObject lossCanvas;
+    [SerializeField] GameObject startCanvas;
     [SerializeField] Text turnText;
     private int turnsRemaining;
     Tile emptyTile = new Tile(tileContents.EMPTY, null, null); //no object for these, so make them once then apply them as needed for brevity
     Tile wallTile = new Tile(tileContents.WALL, null, null);
     private enum gameStatus
     {
-        GO = 0,
-        STOP
+        START = 0,
+        GO,
+        LOSS,
+        WIN
     }
     private gameStatus status;
     private void Start()
@@ -31,16 +34,26 @@ public class GameManager : MonoBehaviour
     }
     void Update()
     {
+        Debug.Log(status);
         if (Input.GetKeyDown(KeyCode.R))
         {
             retry();
         }
-        if (status == gameStatus.GO)
+        if(status == gameStatus.START)
+        {
+            if (Input.GetKeyDown(KeyCode.X))
+            {
+                status = gameStatus.GO;
+                startCanvas.SetActive(false);
+            }
+        }
+        else if (status == gameStatus.GO)
         {
             if (Input.GetKeyDown(KeyCode.X) || Input.GetKeyDown(KeyCode.K))
             {
                 mapM.map[mapM.playerLoc.x, mapM.playerLoc.y] = new Tile(mapM.map[mapM.playerLoc.x, mapM.playerLoc.y].contents, mapM.map[mapM.playerLoc.x, mapM.playerLoc.y].block, Instantiate(bullet));
                 mapM.map[mapM.playerLoc.x, mapM.playerLoc.y].bullet.transform.position = new Vector3Int(mapM.playerLoc.x, mapM.playerLoc.y, 0);
+                //mapM.map[mapM.playerLoc.x, mapM.playerLoc.y].bullet.GetComponent<AudioSource>().Play();
                 turn();
             }
             else if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S))
@@ -103,6 +116,12 @@ public class GameManager : MonoBehaviour
                 push(tiles, locations);
             }
         }
+        else if(status == gameStatus.WIN)
+        {
+            if (Input.GetKeyDown(KeyCode.X)){
+                nextLevel();
+            }
+        }
     }
 
     private void push(List<Tile> tiles, List<Vector2Int> positions)
@@ -124,6 +143,7 @@ public class GameManager : MonoBehaviour
             mapM.playerLoc = new Vector2Int(positions[1].x, positions[1].y); //save new player location 
             mapM.map[positions[1].x, positions[1].y].block.transform.position = new Vector3(positions[1].x, positions[1].y, 0); //move player visually
             mapM.map[positions[2].x, positions[2].y].block.transform.position = new Vector3(positions[2].x, positions[2].y, 0); //move block visually
+            mapM.player.GetComponent<AudioSource>().Play();
             turn();
         }
         else if(tiles.Count > 3 && tiles[1].contents == tileContents.CRATE && tiles[2].contents == tileContents.BLOCK && tiles[3].contents == tileContents.EMPTY)
@@ -137,6 +157,7 @@ public class GameManager : MonoBehaviour
             mapM.map[positions[1].x, positions[1].y].block.transform.position = new Vector3(positions[1].x, positions[1].y, 0); //move player visually
             mapM.map[positions[2].x, positions[2].y].block.transform.position = new Vector3(positions[2].x, positions[2].y, 0); //move block visually
             mapM.map[positions[3].x, positions[3].y].block.transform.position = new Vector3(positions[3].x, positions[3].y, 0);
+            mapM.player.GetComponent<AudioSource>().Play();
             turn();
         }
         else if(tiles.Count > 1 && tiles[1].contents == tileContents.BRIDGE)
@@ -169,11 +190,12 @@ public class GameManager : MonoBehaviour
             mapM.map[positions[0].x, positions[0].y] = emptyTile; //replace with empty 
             mapM.playerLoc = new Vector2Int(positions[1].x, positions[1].y); //save new player location 
             mapM.map[positions[1].x, positions[1].y].block.transform.position = new Vector3(positions[1].x, positions[1].y, 0); //move player visually
+            mapM.player.GetComponent<AudioSource>().Play();
             if (crate)
             {
                 breakCrate();
             }
-            if(status == gameStatus.STOP)
+            if(status == gameStatus.WIN || status == gameStatus.LOSS)
             {
                 turnsRemaining--;
                 turnText.text = "Turns Remaining: " + turnsRemaining.ToString();
@@ -212,9 +234,9 @@ public class GameManager : MonoBehaviour
         }
         turnsRemaining--;
         turnText.text = "Turns Remaining: " + turnsRemaining.ToString();
-        if(turnsRemaining == 0)
+        if(turnsRemaining == 0 && status != gameStatus.WIN)
         {
-            status = gameStatus.STOP;
+            status = gameStatus.LOSS;
             mapM.player.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, .5f);
             StartCoroutine(bulletEnd());
         }
@@ -248,6 +270,7 @@ public class GameManager : MonoBehaviour
                     mapM.crateNum--;
                     if (mapM.crateNum == 0)
                     {
+                        status = gameStatus.WIN;
                         victoryCanvas.SetActive(true);
                         yield break;
                     }
@@ -269,7 +292,7 @@ public class GameManager : MonoBehaviour
         mapM.crateNum--;
         if (mapM.crateNum == 0)
         {
-            status = gameStatus.STOP;
+            status = gameStatus.WIN;
             mapM.player.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, .5f);
             TitleManager.highestLevel++;
             victoryCanvas.SetActive(true);
@@ -287,7 +310,7 @@ public class GameManager : MonoBehaviour
     public void loss()
     {
         lossCanvas.SetActive(true);
-        status = gameStatus.STOP;
+        status = gameStatus.LOSS;
         mapM.player.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, .5f);
     }
     public void retry()
