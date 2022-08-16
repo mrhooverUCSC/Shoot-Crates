@@ -10,6 +10,8 @@ public class TitleManager : MonoBehaviour
     public static int level;
     public static int highestLevel = 1;
     [SerializeField] GameObject buttons;
+    [SerializeField] GameObject instructions;
+    [SerializeField] GameObject legend;
     private void Awake()
     {
         if(Instance != null && Instance != this)
@@ -46,5 +48,32 @@ public class TitleManager : MonoBehaviour
     public void TitleScreen()
     {
         SceneManager.LoadScene("Title");
+    }
+    public void Quit()
+    {
+        Application.Quit();
+    }
+    public void toggleInstructions()
+    {
+        if(instructions.activeSelf == false)
+        {
+            instructions.SetActive(true);
+        }
+        else
+        {
+            instructions.SetActive(false);
+        }
+    }
+    public void toggleLegend()
+    {
+        if (legend.activeSelf == false)
+        {
+            legend.SetActive(true);
+        }
+        else
+        {
+            legend.SetActive(false);
+        }
+
     }
 }

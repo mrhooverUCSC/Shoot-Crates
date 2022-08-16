@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour
     private int turnsRemaining;
     Tile emptyTile = new Tile(tileContents.EMPTY, null, null); //no object for these, so make them once then apply them as needed for brevity
     Tile wallTile = new Tile(tileContents.WALL, null, null);
-    private enum gameStatus
+    private enum gameStatus //keeps track of what types of inputs do
     {
         START = 0,
         GO,
@@ -22,12 +22,12 @@ public class GameManager : MonoBehaviour
         WIN
     }
     private gameStatus status;
-    private void Start()
+    private void Start() 
     {
         turnsRemaining = mapM.turns;
         turnText.text = "Turns Remaining: " + turnsRemaining.ToString();
 
-        if(TitleManager.level > TitleManager.highestLevel)
+        if(TitleManager.level > TitleManager.highestLevel) //makes sure the level is unlocked on title
         {
             TitleManager.highestLevel = TitleManager.level;
         }
@@ -49,14 +49,13 @@ public class GameManager : MonoBehaviour
         }
         else if (status == gameStatus.GO)
         {
-            if (Input.GetKeyDown(KeyCode.X) || Input.GetKeyDown(KeyCode.K))
+            if (Input.GetKeyDown(KeyCode.X) || Input.GetKeyDown(KeyCode.K)) //shoot
             {
                 mapM.map[mapM.playerLoc.x, mapM.playerLoc.y] = new Tile(mapM.map[mapM.playerLoc.x, mapM.playerLoc.y].contents, mapM.map[mapM.playerLoc.x, mapM.playerLoc.y].block, Instantiate(bullet));
                 mapM.map[mapM.playerLoc.x, mapM.playerLoc.y].bullet.transform.position = new Vector3Int(mapM.playerLoc.x, mapM.playerLoc.y, 0);
-                //mapM.map[mapM.playerLoc.x, mapM.playerLoc.y].bullet.GetComponent<AudioSource>().Play();
                 turn();
             }
-            else if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S))
+            else if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S)) //move commands
             {
                 List<Tile> tiles = new List<Tile>();
                 List<Vector2Int> locations = new List<Vector2Int>();
@@ -124,7 +123,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void push(List<Tile> tiles, List<Vector2Int> positions)
+    private void push(List<Tile> tiles, List<Vector2Int> positions) //takes in two lists of the objects in the correct direction, then looks for rules and executes them
     {
         if (tiles.Count > 1 && tiles[1].contents == tileContents.EMPTY) 
         {
@@ -272,6 +271,7 @@ public class GameManager : MonoBehaviour
                     {
                         status = gameStatus.WIN;
                         victoryCanvas.SetActive(true);
+                        TitleManager.highestLevel++;
                         yield break;
                     }
                 }
