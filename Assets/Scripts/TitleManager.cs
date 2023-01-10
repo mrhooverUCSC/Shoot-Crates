@@ -8,7 +8,7 @@ public class TitleManager : MonoBehaviour
 {
     public static TitleManager Instance { get; private set; }
     public static int level;
-    public static int highestLevel = 100;
+    public static int highestLevel = 1;
     [SerializeField] GameObject buttons;
     [SerializeField] GameObject instructions;
     [SerializeField] GameObject legend;

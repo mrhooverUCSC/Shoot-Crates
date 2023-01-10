@@ -41,7 +41,7 @@ public class GameManager : MonoBehaviour
         }
         if(status == gameStatus.START)
         {
-            if (Input.GetKeyDown(KeyCode.X))
+            if (Input.GetKeyDown(KeyCode.X) || Input.GetTouch(0).tapCount > 0) // keyboard or touch to continue
             {
                 status = gameStatus.GO;
                 startCanvas.SetActive(false);
@@ -49,7 +49,7 @@ public class GameManager : MonoBehaviour
         }
         else if (status == gameStatus.GO)
         {
-            if (Input.GetKeyDown(KeyCode.X) || Input.GetKeyDown(KeyCode.K)) //shoot
+            if (Input.GetKeyDown(KeyCode.X) || Input.GetKeyDown(KeyCode.K) || ) //shoot
             {
                 mapM.map[mapM.playerLoc.x, mapM.playerLoc.y] = new Tile(mapM.map[mapM.playerLoc.x, mapM.playerLoc.y].contents, mapM.map[mapM.playerLoc.x, mapM.playerLoc.y].block, Instantiate(bullet));
                 mapM.map[mapM.playerLoc.x, mapM.playerLoc.y].bullet.transform.position = new Vector3Int(mapM.playerLoc.x, mapM.playerLoc.y, 0);
