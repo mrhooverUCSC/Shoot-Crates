@@ -1164,11 +1164,27 @@ PrefabInstance:
       propertyPath: m_Name
       value: GameCanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 2938285215855084388, guid: b7d4668c6daaea047b12575c84ba5d58, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2938285216676645104, guid: b7d4668c6daaea047b12575c84ba5d58, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4114297170499116467, guid: b7d4668c6daaea047b12575c84ba5d58, type: 3}
       propertyPath: m_Text
       value: 'Level 1
 
         Tutorial'
+      objectReference: {fileID: 0}
+    - target: {fileID: 4190174692462135582, guid: b7d4668c6daaea047b12575c84ba5d58, type: 3}
+      propertyPath: m_Name
+      value: Main Menu Button
+      objectReference: {fileID: 0}
+    - target: {fileID: 4190174692462135582, guid: b7d4668c6daaea047b12575c84ba5d58, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4283413335813305426, guid: b7d4668c6daaea047b12575c84ba5d58, type: 3}
       propertyPath: m_Sprite
@@ -1178,6 +1194,18 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 21300000, guid: 179adee50f1abcb408839da1ed089d87, type: 3}
+    - target: {fileID: 4454254592320111853, guid: b7d4668c6daaea047b12575c84ba5d58, type: 3}
+      propertyPath: m_Name
+      value: Restart Button
+      objectReference: {fileID: 0}
+    - target: {fileID: 4454254592320111853, guid: b7d4668c6daaea047b12575c84ba5d58, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5158016612677526106, guid: b7d4668c6daaea047b12575c84ba5d58, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5431758481943674261, guid: b7d4668c6daaea047b12575c84ba5d58, type: 3}
       propertyPath: m_LocalRotation.w
       value: 0.7071068
