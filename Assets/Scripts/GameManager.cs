@@ -14,6 +14,13 @@ public class GameManager : MonoBehaviour
     private int turnsRemaining;
     Tile emptyTile = new Tile(tileContents.EMPTY, null, null); //no object for these, so make them once then apply them as needed for brevity
     Tile wallTile = new Tile(tileContents.WALL, null, null);
+
+    //mobile bools: Mobile buttons create bools to use instead of Input.GetButton()
+    bool shoot;
+    bool moveUp;
+    bool moveRight;
+    bool moveLeft;
+    bool moveDown;
     private enum gameStatus //keeps track of what types of inputs do
     {
         START = 0,
@@ -22,26 +29,21 @@ public class GameManager : MonoBehaviour
         WIN
     }
     private gameStatus status;
-    private void Start() 
+    private void Start()
     {
         turnsRemaining = mapM.turns;
         turnText.text = "Turns Remaining: " + turnsRemaining.ToString();
-
-        if(TitleManager.level > TitleManager.highestLevel) //makes sure the level is unlocked on title
-        {
-            TitleManager.highestLevel = TitleManager.level;
-        }
     }
     void Update()
     {
-        Debug.Log(status);
+        //Debug.Log(status);
         if (Input.GetKeyDown(KeyCode.R))
         {
             retry();
         }
-        if(status == gameStatus.START)
+        if (status == gameStatus.START)
         {
-            if (Input.GetKeyDown(KeyCode.X))
+            if (Input.GetKeyDown(KeyCode.X) || Input.touchCount > 0) // keyboard or touch to continue
             {
                 status = gameStatus.GO;
                 startCanvas.SetActive(false);
@@ -49,27 +51,29 @@ public class GameManager : MonoBehaviour
         }
         else if (status == gameStatus.GO)
         {
-            if (Input.GetKeyDown(KeyCode.X) || Input.GetKeyDown(KeyCode.K)) //shoot
+            if (Input.GetKeyDown(KeyCode.X) || Input.GetKeyDown(KeyCode.K) || shoot) //shoot
             {
                 mapM.map[mapM.playerLoc.x, mapM.playerLoc.y] = new Tile(mapM.map[mapM.playerLoc.x, mapM.playerLoc.y].contents, mapM.map[mapM.playerLoc.x, mapM.playerLoc.y].block, Instantiate(bullet));
                 mapM.map[mapM.playerLoc.x, mapM.playerLoc.y].bullet.transform.position = new Vector3Int(mapM.playerLoc.x, mapM.playerLoc.y, 0);
                 turn();
+                shoot = false;
             }
-            else if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S)) //move commands
+            else if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S) || moveDown) //move commands
             {
                 List<Tile> tiles = new List<Tile>();
                 List<Vector2Int> locations = new List<Vector2Int>();
-                for(int i = 0; true; i++)
+                for (int i = 0; true; i++)
                 {
-                    try{ 
+                    try {
                         tiles.Add(mapM.map[mapM.playerLoc.x, mapM.playerLoc.y - i]);
                         locations.Add(new Vector2Int(mapM.playerLoc.x, mapM.playerLoc.y - i));
                     }
                     catch { break; }
                 }
                 push(tiles, locations);
+                moveDown = false;
             }
-            else if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W))
+            else if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W) || moveUp)
             {
                 List<Tile> tiles = new List<Tile>();
                 List<Vector2Int> locations = new List<Vector2Int>();
@@ -83,8 +87,9 @@ public class GameManager : MonoBehaviour
                     catch { break; }
                 }
                 push(tiles, locations);
+                moveUp = false;
             }
-            else if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D))
+            else if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D) || moveRight)
             {
                 List<Tile> tiles = new List<Tile>();
                 List<Vector2Int> locations = new List<Vector2Int>();
@@ -98,8 +103,9 @@ public class GameManager : MonoBehaviour
                     catch { break; }
                 }
                 push(tiles, locations);
+                moveRight = false;
             }
-            else if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A))
+            else if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A) || moveLeft)
             {
                 List<Tile> tiles = new List<Tile>();
                 List<Vector2Int> locations = new List<Vector2Int>();
@@ -113,11 +119,12 @@ public class GameManager : MonoBehaviour
                     catch { break; }
                 }
                 push(tiles, locations);
+                moveLeft = false;
             }
         }
-        else if(status == gameStatus.WIN)
+        else if (status == gameStatus.WIN)
         {
-            if (Input.GetKeyDown(KeyCode.X)){
+            if (Input.GetKeyDown(KeyCode.X) || Input.touchCount > 0) {
                 nextLevel();
             }
         }
@@ -125,7 +132,7 @@ public class GameManager : MonoBehaviour
 
     private void push(List<Tile> tiles, List<Vector2Int> positions) //takes in two lists of the objects in the correct direction, then looks for rules and executes them
     {
-        if (tiles.Count > 1 && tiles[1].contents == tileContents.EMPTY) 
+        if (tiles.Count > 1 && tiles[1].contents == tileContents.EMPTY)
         {
             mapM.map[positions[1].x, positions[1].y] = mapM.map[positions[0].x, positions[0].y]; //move player over 
             mapM.map[positions[0].x, positions[0].y] = emptyTile; //replace with empty 
@@ -135,7 +142,7 @@ public class GameManager : MonoBehaviour
         }
         else if (tiles.Count > 2 && (tiles[1].contents == tileContents.BLOCK || tiles[1].contents == tileContents.CRATE) && tiles[2].contents == tileContents.EMPTY)
         {
-            Debug.Log("push" + tiles[1].contents);
+            //Debug.Log("push" + tiles[1].contents);
             mapM.map[positions[2].x, positions[2].y] = mapM.map[positions[1].x, positions[1].y]; //move block over
             mapM.map[positions[1].x, positions[1].y] = mapM.map[positions[0].x, positions[0].y]; //move player over 
             mapM.map[positions[0].x, positions[0].y] = emptyTile; //replace with empty 
@@ -145,9 +152,9 @@ public class GameManager : MonoBehaviour
             mapM.player.GetComponent<AudioSource>().Play();
             turn();
         }
-        else if(tiles.Count > 3 && tiles[1].contents == tileContents.CRATE && tiles[2].contents == tileContents.BLOCK && tiles[3].contents == tileContents.EMPTY)
+        else if (tiles.Count > 3 && tiles[1].contents == tileContents.CRATE && tiles[2].contents == tileContents.BLOCK && tiles[3].contents == tileContents.EMPTY)
         {
-            Debug.Log("double push");
+            //Debug.Log("double push");
             mapM.map[positions[3].x, positions[3].y] = mapM.map[positions[2].x, positions[2].y];
             mapM.map[positions[2].x, positions[2].y] = mapM.map[positions[1].x, positions[1].y]; //move block over
             mapM.map[positions[1].x, positions[1].y] = mapM.map[positions[0].x, positions[0].y]; //move player over 
@@ -159,14 +166,14 @@ public class GameManager : MonoBehaviour
             mapM.player.GetComponent<AudioSource>().Play();
             turn();
         }
-        else if(tiles.Count > 1 && tiles[1].contents == tileContents.BRIDGE)
+        else if (tiles.Count > 1 && tiles[1].contents == tileContents.BRIDGE)
         {
             int i = 1;
-            while(tiles[i].contents == tileContents.BRIDGE)
+            while (tiles[i].contents == tileContents.BRIDGE)
             {
                 i++;
             }
-            if(tiles[i].contents == tileContents.EMPTY)
+            if (tiles[i].contents == tileContents.EMPTY)
             {
                 mapM.map[positions[i].x, positions[i].y] = mapM.map[positions[0].x, positions[0].y];
                 mapM.map[positions[0].x, positions[0].y] = emptyTile; //replace with empty 
@@ -175,10 +182,10 @@ public class GameManager : MonoBehaviour
                 turn();
             }
         }
-        else if(tiles.Count > 2 && (tiles[1].contents == tileContents.CRATE || tiles[1].contents == tileContents.BLOCK) && tiles[2].contents == tileContents.PIT)
+        else if (tiles.Count > 2 && (tiles[1].contents == tileContents.CRATE || tiles[1].contents == tileContents.BLOCK) && tiles[2].contents == tileContents.PIT)
         {
             bool crate = false;
-            if(tiles[1].contents == tileContents.CRATE)
+            if (tiles[1].contents == tileContents.CRATE)
             {
                 crate = true;
             }
@@ -194,7 +201,7 @@ public class GameManager : MonoBehaviour
             {
                 breakCrate();
             }
-            if(status == gameStatus.WIN || status == gameStatus.LOSS)
+            if (status == gameStatus.WIN || status == gameStatus.LOSS)
             {
                 turnsRemaining--;
                 turnText.text = "Turns Remaining: " + turnsRemaining.ToString();
@@ -222,7 +229,7 @@ public class GameManager : MonoBehaviour
                 mapM.map[(int)b.transform.position.x, (int)b.transform.position.y].bullet = null;
                 Destroy(b);
             }
-            else if(next == tileContents.CRATE)
+            else if (next == tileContents.CRATE)
             {
                 Destroy(mapM.map[(int)b.transform.position.x + 1, (int)b.transform.position.y].block);
                 mapM.map[(int)b.transform.position.x + 1, (int)b.transform.position.y] = emptyTile;
@@ -233,7 +240,7 @@ public class GameManager : MonoBehaviour
         }
         turnsRemaining--;
         turnText.text = "Turns Remaining: " + turnsRemaining.ToString();
-        if(turnsRemaining == 0 && status != gameStatus.WIN)
+        if (turnsRemaining == 0 && status != gameStatus.WIN)
         {
             status = gameStatus.LOSS;
             mapM.player.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, .5f);
@@ -271,7 +278,10 @@ public class GameManager : MonoBehaviour
                     {
                         status = gameStatus.WIN;
                         victoryCanvas.SetActive(true);
-                        TitleManager.highestLevel++;
+                        if (TitleManager.level+1 > TitleManager.highestLevel)
+                        {
+                            TitleManager.highestLevel = TitleManager.level+1;
+                        }
                         yield break;
                     }
                 }
@@ -280,7 +290,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            if(mapM.crateNum != 0)
+            if (mapM.crateNum != 0)
             {
                 lossCanvas.SetActive(true);
             }
@@ -317,4 +327,35 @@ public class GameManager : MonoBehaviour
     {
         TitleManager.Instance.EnterLevel(TitleManager.level);
     }
+
+    //mobile button functions
+    
+    public void mobileShoot()
+    {
+        shoot = true;
+        Debug.Log("mobile shoot");
+    }
+    public void mobileMoveDown()
+    {
+        moveDown = true;
+        Debug.Log("mobile down");
+    }
+    public void mobileMoveUp()
+    {
+        moveUp = true;
+        Debug.Log("mobile up");
+    }
+
+    public void mobileMoveLeft()
+    {
+        moveLeft = true;
+        Debug.Log("mobile left");
+    }
+
+    public void mobileMoveRight()
+    {
+        moveRight = true;
+        Debug.Log("mobile right");
+    }
+    
 }
