@@ -622,7 +622,7 @@ MonoBehaviour:
   victoryCanvas: {fileID: 2938285217560549905}
   lossCanvas: {fileID: 2938285217286078374}
   startCanvas: {fileID: 6752023429287565371}
-  turnText: {fileID: 0}
+  turnText: {fileID: 7975055341669177891}
 --- !u!1 &2938285215985913947
 GameObject:
   m_ObjectHideFlags: 0
@@ -2805,7 +2805,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &7136541909843672936
 RectTransform:
   m_ObjectHideFlags: 0

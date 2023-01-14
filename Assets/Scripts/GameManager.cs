@@ -311,6 +311,7 @@ public class GameManager : MonoBehaviour
     public void nextLevel()
     {
         TitleManager.level++;
+        System.IO.File.WriteAllText(Application.persistentDataPath + "/SCData.json", TitleManager.highestLevel.ToString());
         TitleManager.Instance.EnterLevel(TitleManager.level);
     }
     public void levelSelect()

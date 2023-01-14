@@ -4425,7 +4425,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   crateNum: 0
   zone: {x: 14, y: 12}
-  turns: 44
+  turns: 42
   objects: {fileID: 1302628305}
   playerLoc: {x: 0, y: 0}
   player: {fileID: 0}
