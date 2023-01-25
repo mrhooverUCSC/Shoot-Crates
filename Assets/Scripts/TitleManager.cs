@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
+using GoogleMobileAds.Api;
+
 public class TitleManager : MonoBehaviour
 {
     public static TitleManager Instance { get; private set; }
@@ -13,7 +15,12 @@ public class TitleManager : MonoBehaviour
     [SerializeField] GameObject instructions;
     [SerializeField] GameObject credits;
     [SerializeField] GameObject legend;
+
+    [SerializeField] GameObject debug1;
     bool loadData = true;
+
+    private BannerView bannerView;
+    private InterstitialAd interstitial;
     private void Awake()
     {
         if(Instance != null && Instance != this)
@@ -30,6 +37,10 @@ public class TitleManager : MonoBehaviour
     {
         if (loadData)
         {
+            if(SystemInfo.deviceType == DeviceType.Handheld)
+            {
+                MobileAds.Initialize(initStatus => { });
+            }
             //load level data
             if (!System.IO.File.Exists(Application.persistentDataPath + "/SCData.json")) //if no data file, make one
             {
@@ -45,6 +56,8 @@ public class TitleManager : MonoBehaviour
             }
             loadData = false;
         }
+        requestBanner();
+        //RequestInterstitial();
         Button[] b = buttons.transform.GetComponentsInChildren<Button>();
         //Debug.Log(b.Length);
         for (int i = 0; i < highestLevel - 1; ++i)
@@ -52,10 +65,12 @@ public class TitleManager : MonoBehaviour
             b[i].interactable = true;
         }
     }
-
+    #region menu functions
 
     public void EnterLevel(int l)
     {
+        bannerView.Destroy();
+        interstitial.Destroy();
         Debug.Log("entering level " + l + ", highest level is " + highestLevel);
         level = l;
         SceneManager.LoadScene("Level" + l.ToString());
@@ -103,4 +118,34 @@ public class TitleManager : MonoBehaviour
         }
 
     }
+    #endregion
+
+    #region ads
+    public void requestBanner()
+    {
+        if (bannerView != null)
+        {
+            bannerView.Destroy();
+        }
+        //my id: "ca-app-pub-3422267264140540~9118895823"
+        //test banner ad id: "ca-app-pub-3940256099942544/6300978111"
+        AdSize size = AdSize.GetCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(AdSize.FullWidth);
+        bannerView = new BannerView("ca-app-pub-3940256099942544/6300978111", size, AdPosition.Bottom);
+        // Create an empty ad request.
+        // Register the events
+        AdRequest request = new AdRequest.Builder().Build();
+        //this.bannerView.OnBannerAdLoaded += this.HandleAdLoaded;
+        //this.bannerView.OnBannerAdLoadFailed += this.HandleAdFailedToLoad;
+        //this.bannerView.OnAdClicked += this.HandleAdOpening;
+        //this.bannerView.on += this.HandleAdClosed; //i don't think banner ads can be closed
+
+        // Load the banner with the request.
+        bannerView.LoadAd(request);
+    }
+    public void RequestInterstitial()
+    {
+        interstitial.Destroy();
+        interstitial = new InterstitialAd("ca - app - pub - 3940256099942544 / 1033173712");
+    }
+    #endregion
 }
