@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 using GoogleMobileAds.Api;
+using System;
 
 public class TitleManager : MonoBehaviour
 {
@@ -127,21 +128,37 @@ public class TitleManager : MonoBehaviour
         {
             bannerView.Destroy();
         }
-        //my id: "ca-app-pub-3422267264140540~9118895823"
+        //my id: "ca-app-pub-3422267264140540/5279916682"
         //test banner ad id: "ca-app-pub-3940256099942544/6300978111"
         AdSize size = AdSize.GetCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(AdSize.FullWidth);
-        bannerView = new BannerView("ca-app-pub-3940256099942544/6300978111", size, AdPosition.Bottom);
+        bannerView = new BannerView("ca-app-pub-3422267264140540/5279916682", size, AdPosition.Bottom);
         // Create an empty ad request.
         // Register the events
         AdRequest request = new AdRequest.Builder().Build();
-        //this.bannerView.OnBannerAdLoaded += this.HandleAdLoaded;
-        //this.bannerView.OnBannerAdLoadFailed += this.HandleAdFailedToLoad;
-        //this.bannerView.OnAdClicked += this.HandleAdOpening;
+        this.bannerView.OnBannerAdLoaded += this.HandleOnAdLoaded;
+        this.bannerView.OnBannerAdLoadFailed += this.HandleOnAdFailedToLoad;
+        this.bannerView.OnAdClicked += this.HandleOnAdOpened;
         //this.bannerView.on += this.HandleAdClosed; //i don't think banner ads can be closed
 
         // Load the banner with the request.
         bannerView.LoadAd(request);
     }
+    public void HandleOnAdLoaded()
+    {
+        MonoBehaviour.print("----HandleAdLoaded event received----");
+    }
+
+    public void HandleOnAdFailedToLoad(LoadAdError error)
+    {
+        MonoBehaviour.print("----HandleFailedToReceiveAd event received with message: "
+                            + error.GetMessage() + "----");
+    }
+
+    public void HandleOnAdOpened()
+    {
+        MonoBehaviour.print("----HandleAdOpened event received----");
+    }
+
     public void RequestInterstitial()
     {
         interstitial.Destroy();
