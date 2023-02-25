@@ -70,8 +70,14 @@ public class TitleManager : MonoBehaviour
 
     public void EnterLevel(int l)
     {
-        bannerView.Destroy();
-        interstitial.Destroy();
+        if(bannerView != null)
+        {
+            bannerView.Destroy();
+        }
+        if(interstitial != null)
+        {
+            interstitial.Destroy();
+        }
         Debug.Log("entering level " + l + ", highest level is " + highestLevel);
         level = l;
         SceneManager.LoadScene("Level" + l.ToString());

@@ -304,7 +304,10 @@ public class GameManager : MonoBehaviour
         {
             status = gameStatus.WIN;
             mapM.player.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, .5f);
-            TitleManager.highestLevel++;
+            if (TitleManager.level + 1 > TitleManager.highestLevel)
+            {
+                TitleManager.highestLevel = TitleManager.level + 1;
+            }
             victoryCanvas.SetActive(true);
         }
     }
