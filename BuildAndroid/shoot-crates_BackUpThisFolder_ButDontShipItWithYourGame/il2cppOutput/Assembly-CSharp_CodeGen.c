@@ -47,6 +47,7 @@ extern void TitleManager_Quit_mAD2BFB876214621D10395A72315BA054D9C0152D (void);
 extern void TitleManager_toggleInstructions_m937CC7D3EE3E9D88BB999C9996374EF11FA55704 (void);
 extern void TitleManager_toggleCredits_mB1AF470175830A29F5FA9AC96B1B75919E40F7D1 (void);
 extern void TitleManager_toggleLegend_mF7FB19F1A9A10C54536EC3EF0EBDF15CBE2AF300 (void);
+extern void TitleManager_toggleLevelSelect_m63700122760A51D076162E31ADDA2515F3F3E69D (void);
 extern void TitleManager_requestBanner_mC6B4CFC16EC9429B9F5AC2C3E253BBF2B8020A98 (void);
 extern void TitleManager_HandleOnAdLoaded_mA60B44F3EF98E646137ABA2D811E2796AF39517C (void);
 extern void TitleManager_HandleOnAdFailedToLoad_m3277C07D8FF9941E2C2550A36DDA6C379E3F91C8 (void);
@@ -55,11 +56,11 @@ extern void TitleManager_RequestInterstitial_m8EBE9661ACD49BBE7892312CE94E653276
 extern void TitleManager__ctor_m08406351E7FEB77F80D0A3A7F3FCC58D5CAAE237 (void);
 extern void U3CU3Ec__cctor_m3490E29D5D21EB63F6DC03C3C2B80365AEB59821 (void);
 extern void U3CU3Ec__ctor_m8E71AF5DFEE7BB8638BFA862F98D39C2CDE61CFC (void);
-extern void U3CU3Ec_U3CStartU3Eb__15_0_m0845F77512B5EF11D4AFFE3760F7322D39F68139 (void);
+extern void U3CU3Ec_U3CStartU3Eb__16_0_mF39F434373841E88F7AE451910CC70C2CAB9F72F (void);
 extern void UnitySourceGeneratedAssemblyMonoScriptTypes_IsEditorOnly_m59E10A16B0BDEA496377805E39C3D90B1E2C4815 (void);
 extern void UnitySourceGeneratedAssemblyMonoScriptTypes_Get_mDAD527916A4779DB4ACAFEADC3BA7372671FA647 (void);
 extern void UnitySourceGeneratedAssemblyMonoScriptTypes__ctor_mE2C680837D47039E3F06032AA8C63FEDB7E783A5 (void);
-static Il2CppMethodPointer s_methodPointers[47] = 
+static Il2CppMethodPointer s_methodPointers[48] = 
 {
 	GameManager_Start_m87A71D65F3171A58DBDDBFB03832ADA65643D0E2,
 	GameManager_Update_m7F29D8E933B8D21D2E67507979C0F12ACF87BB41,
@@ -96,6 +97,7 @@ static Il2CppMethodPointer s_methodPointers[47] =
 	TitleManager_toggleInstructions_m937CC7D3EE3E9D88BB999C9996374EF11FA55704,
 	TitleManager_toggleCredits_mB1AF470175830A29F5FA9AC96B1B75919E40F7D1,
 	TitleManager_toggleLegend_mF7FB19F1A9A10C54536EC3EF0EBDF15CBE2AF300,
+	TitleManager_toggleLevelSelect_m63700122760A51D076162E31ADDA2515F3F3E69D,
 	TitleManager_requestBanner_mC6B4CFC16EC9429B9F5AC2C3E253BBF2B8020A98,
 	TitleManager_HandleOnAdLoaded_mA60B44F3EF98E646137ABA2D811E2796AF39517C,
 	TitleManager_HandleOnAdFailedToLoad_m3277C07D8FF9941E2C2550A36DDA6C379E3F91C8,
@@ -104,12 +106,12 @@ static Il2CppMethodPointer s_methodPointers[47] =
 	TitleManager__ctor_m08406351E7FEB77F80D0A3A7F3FCC58D5CAAE237,
 	U3CU3Ec__cctor_m3490E29D5D21EB63F6DC03C3C2B80365AEB59821,
 	U3CU3Ec__ctor_m8E71AF5DFEE7BB8638BFA862F98D39C2CDE61CFC,
-	U3CU3Ec_U3CStartU3Eb__15_0_m0845F77512B5EF11D4AFFE3760F7322D39F68139,
+	U3CU3Ec_U3CStartU3Eb__16_0_mF39F434373841E88F7AE451910CC70C2CAB9F72F,
 	UnitySourceGeneratedAssemblyMonoScriptTypes_IsEditorOnly_m59E10A16B0BDEA496377805E39C3D90B1E2C4815,
 	UnitySourceGeneratedAssemblyMonoScriptTypes_Get_mDAD527916A4779DB4ACAFEADC3BA7372671FA647,
 	UnitySourceGeneratedAssemblyMonoScriptTypes__ctor_mE2C680837D47039E3F06032AA8C63FEDB7E783A5,
 };
-static const int32_t s_InvokerIndices[47] = 
+static const int32_t s_InvokerIndices[48] = 
 {
 	4778,
 	4778,
@@ -148,6 +150,7 @@ static const int32_t s_InvokerIndices[47] =
 	4778,
 	4778,
 	4778,
+	4778,
 	3840,
 	4778,
 	4778,
@@ -163,7 +166,7 @@ IL2CPP_EXTERN_C const Il2CppCodeGenModule g_AssemblyU2DCSharp_CodeGenModule;
 const Il2CppCodeGenModule g_AssemblyU2DCSharp_CodeGenModule = 
 {
 	"Assembly-CSharp.dll",
-	47,
+	48,
 	s_methodPointers,
 	0,
 	NULL,

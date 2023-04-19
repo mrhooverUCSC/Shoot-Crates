@@ -155,6 +155,7 @@ Library: lib_burst_generated
 --root-assembly=D:\UnityProjects\Shoot-Crates\Temp\StagingArea\Data\Managed\Unity.Services.Core.Configuration.dll
 --root-assembly=D:\UnityProjects\Shoot-Crates\Temp\StagingArea\Data\Managed\Unity.2D.Animation.Runtime.dll
 --root-assembly=D:\UnityProjects\Shoot-Crates\Temp\StagingArea\Data\Managed\Unity.Services.Core.dll
+--root-assembly=D:\UnityProjects\Shoot-Crates\Temp\StagingArea\Data\Managed\Unity.2D.Tilemap.Extras.dll
 --root-assembly=D:\UnityProjects\Shoot-Crates\Temp\StagingArea\Data\Managed\Assembly-CSharp.dll
 --root-assembly=D:\UnityProjects\Shoot-Crates\Temp\StagingArea\Data\Managed\Unity.VisualScripting.State.dll
 --root-assembly=D:\UnityProjects\Shoot-Crates\Temp\StagingArea\Data\Managed\Unity.TextMeshPro.dll

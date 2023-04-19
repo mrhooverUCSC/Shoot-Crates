@@ -16,6 +16,7 @@ public class TitleManager : MonoBehaviour
     [SerializeField] GameObject instructions;
     [SerializeField] GameObject credits;
     [SerializeField] GameObject legend;
+    [SerializeField] GameObject levelSelect;
 
     [SerializeField] GameObject debug1;
     bool loadData = true;
@@ -66,8 +67,9 @@ public class TitleManager : MonoBehaviour
             b[i].interactable = true;
         }
     }
-    #region menu functions
 
+
+    #region menu functions
     public void EnterLevel(int l)
     {
         if(bannerView != null)
@@ -122,6 +124,18 @@ public class TitleManager : MonoBehaviour
         else
         {
             legend.SetActive(false);
+        }
+
+    }
+    public void toggleLevelSelect()
+    {
+        if (levelSelect.activeSelf == false)
+        {
+            levelSelect.SetActive(true);
+        }
+        else
+        {
+            levelSelect.SetActive(false);
         }
 
     }
