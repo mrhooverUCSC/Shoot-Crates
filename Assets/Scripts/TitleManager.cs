@@ -6,12 +6,15 @@ using UnityEngine.SceneManagement;
 
 using GoogleMobileAds.Api;
 using System;
+using TMPro;
 
 public class TitleManager : MonoBehaviour
 {
     public static TitleManager Instance { get; private set; }
     public static int level;
     public static int highestLevel;
+    public static bool practiceMode = false;
+    [SerializeField] Text practiceModeText;
     [SerializeField] GameObject buttons;
     [SerializeField] GameObject instructions;
     [SerializeField] GameObject credits;
@@ -65,6 +68,17 @@ public class TitleManager : MonoBehaviour
         for (int i = 0; i < highestLevel - 1; ++i)
         {
             b[i].interactable = true;
+        }
+
+        if (practiceMode == true)
+        {
+            practiceModeText.text = "Practice Mode Enabled";
+            practiceModeText.color = Color.green;
+        }
+        else
+        {
+            practiceModeText.text = "Practice Mode Disabled";
+            practiceModeText.color = Color.red;
         }
     }
 
@@ -138,6 +152,22 @@ public class TitleManager : MonoBehaviour
             levelSelect.SetActive(false);
         }
 
+    }
+
+    public void togglePracticeMode()
+    {
+        if(practiceMode == false)
+        {
+            practiceMode = true;
+            practiceModeText.text = "Practice Mode Enabled";
+            practiceModeText.color = Color.green;
+        }
+        else
+        {
+            practiceMode = false;
+            practiceModeText.text = "Practice Mode Disabled";
+            practiceModeText.color = Color.red;
+        }
     }
     #endregion
 

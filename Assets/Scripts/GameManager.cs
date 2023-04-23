@@ -31,8 +31,16 @@ public class GameManager : MonoBehaviour
     private gameStatus status;
     private void Start()
     {
-        turnsRemaining = mapM.turns;
-        turnText.text = "Turns Remaining: " + turnsRemaining.ToString();
+        if(TitleManager.practiceMode == false)
+        {
+            turnsRemaining = mapM.turns;
+            turnText.text = "Turns Remaining: " + turnsRemaining.ToString();
+        }
+        else
+        {
+            turnsRemaining = int.MaxValue;
+            turnText.text = "Practice Mode";
+        }
     }
     void Update()
     {
@@ -203,8 +211,11 @@ public class GameManager : MonoBehaviour
             }
             if (status == gameStatus.WIN || status == gameStatus.LOSS)
             {
-                turnsRemaining--;
-                turnText.text = "Turns Remaining: " + turnsRemaining.ToString();
+                if(TitleManager.practiceMode == false)
+                {
+                    turnsRemaining--;
+                    turnText.text = "Turns Remaining: " + turnsRemaining.ToString();
+                }
             }
             else
             {
@@ -238,8 +249,11 @@ public class GameManager : MonoBehaviour
                 breakCrate();
             }
         }
-        turnsRemaining--;
-        turnText.text = "Turns Remaining: " + turnsRemaining.ToString();
+        if(TitleManager.practiceMode == false)
+        {
+            turnsRemaining--;
+            turnText.text = "Turns Remaining: " + turnsRemaining.ToString();
+        }
         if (turnsRemaining == 0 && status != gameStatus.WIN)
         {
             status = gameStatus.LOSS;
@@ -274,7 +288,7 @@ public class GameManager : MonoBehaviour
                     mapM.map[(int)b.transform.position.x, (int)b.transform.position.y].bullet = null;
                     b.transform.position = b.transform.position + Vector3.right;
                     mapM.crateNum--;
-                    if (mapM.crateNum == 0)
+                    if (mapM.crateNum == 0 && TitleManager.practiceMode == false)
                     {
                         status = gameStatus.WIN;
                         victoryCanvas.SetActive(true);
@@ -300,7 +314,7 @@ public class GameManager : MonoBehaviour
     private void breakCrate()
     {
         mapM.crateNum--;
-        if (mapM.crateNum == 0)
+        if (mapM.crateNum == 0 && TitleManager.practiceMode == false)
         {
             status = gameStatus.WIN;
             mapM.player.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, .5f);
