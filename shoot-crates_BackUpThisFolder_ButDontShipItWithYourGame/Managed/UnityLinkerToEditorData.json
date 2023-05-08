@@ -808,6 +808,12 @@
             "icon": "package/com.unity.modules.jsonserialize"
           },
           {
+            "name": "Required by Physics Module",
+            "scenes": [],
+            "dependencyType": 2,
+            "icon": "package/com.unity.modules.physics"
+          },
+          {
             "name": "Required by Physics2D Module",
             "scenes": [],
             "dependencyType": 2,
@@ -946,6 +952,29 @@
         ]
       },
       {
+        "name": "Physics",
+        "dependencies": [
+          {
+            "name": "Collider",
+            "scenes": [],
+            "dependencyType": 0,
+            "icon": null
+          },
+          {
+            "name": "PhysicsManager",
+            "scenes": [],
+            "dependencyType": 1,
+            "icon": null
+          },
+          {
+            "name": "Rigidbody",
+            "scenes": [],
+            "dependencyType": 0,
+            "icon": null
+          }
+        ]
+      },
+      {
         "name": "Physics2D",
         "dependencies": [
           {
@@ -1029,6 +1058,12 @@
             "scenes": [],
             "dependencyType": 2,
             "icon": "package/com.unity.modules.jsonserialize"
+          },
+          {
+            "name": "Required by Physics Module",
+            "scenes": [],
+            "dependencyType": 2,
+            "icon": "package/com.unity.modules.physics"
           },
           {
             "name": "Required by Physics2D Module",
@@ -1137,6 +1172,12 @@
               "Assets/Scenes/Level9.unity",
               "Assets/Scenes/Title.unity"
             ],
+            "dependencyType": 0,
+            "icon": null
+          },
+          {
+            "name": "TextMesh",
+            "scenes": [],
             "dependencyType": 0,
             "icon": null
           },
