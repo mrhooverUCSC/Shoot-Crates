@@ -51,7 +51,15 @@ public class GameManager : MonoBehaviour
         }
         if (status == gameStatus.START)
         {
-            if (Input.GetKeyDown(KeyCode.X) || Input.touchCount > 0) // keyboard or touch to continue
+            bool justTapped = false;
+            foreach(Touch t in Input.touches)
+            {
+                if(t.phase == TouchPhase.Began)
+                {
+                    justTapped = true;
+                }
+            }
+            if (Input.GetKeyDown(KeyCode.X) || justTapped == true) // keyboard or touch to continue
             {
                 status = gameStatus.GO;
                 startCanvas.SetActive(false);
@@ -59,6 +67,10 @@ public class GameManager : MonoBehaviour
         }
         else if (status == gameStatus.GO)
         {
+            if (Input.GetKeyDown(KeyCode.I))
+            {
+                ScreenCapture.CaptureScreenshot("screenshot.png", 1);
+            }
             if (Input.GetKeyDown(KeyCode.X) || Input.GetKeyDown(KeyCode.K) || shoot) //shoot
             {
                 mapM.map[mapM.playerLoc.x, mapM.playerLoc.y] = new Tile(mapM.map[mapM.playerLoc.x, mapM.playerLoc.y].contents, mapM.map[mapM.playerLoc.x, mapM.playerLoc.y].block, Instantiate(bullet));
@@ -347,7 +359,6 @@ public class GameManager : MonoBehaviour
     }
 
     //mobile button functions
-    
     public void mobileShoot()
     {
         shoot = true;

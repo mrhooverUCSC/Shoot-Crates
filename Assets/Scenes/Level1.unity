@@ -1265,6 +1265,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: GameCanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 4114297170499116467, guid: b7d4668c6daaea047b12575c84ba5d58, type: 3}
+      propertyPath: m_Text
+      value: 'Level 1
+
+        Tutorial'
+      objectReference: {fileID: 0}
     - target: {fileID: 6751187442013754768, guid: b7d4668c6daaea047b12575c84ba5d58, type: 3}
       propertyPath: mapM
       value: 

@@ -80,6 +80,9 @@ public class TitleManager : MonoBehaviour
             practiceModeText.text = "Practice Mode Disabled";
             practiceModeText.color = Color.red;
         }
+
+        //ScreenCapture.CaptureScreenshot("screenshot.png", 1);
+
     }
 
 
@@ -160,7 +163,7 @@ public class TitleManager : MonoBehaviour
         {
             practiceMode = true;
             practiceModeText.text = "Practice Mode Enabled";
-            practiceModeText.color = Color.green;
+            practiceModeText.color = new Color(.26f, .66f, .21f);
         }
         else
         {
@@ -178,10 +181,15 @@ public class TitleManager : MonoBehaviour
         {
             bannerView.Destroy();
         }
-        //my id: "ca-app-pub-3422267264140540/5279916682"
+        //android banner ad id: "ca-app-pub-3422267264140540/5279916682"
         //test banner ad id: "ca-app-pub-3940256099942544/6300978111"
+        //iOS banner ad id: "ca-app-pub-3422267264140540/7214962530"
         AdSize size = AdSize.GetCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(AdSize.FullWidth);
-        bannerView = new BannerView("ca-app-pub-3422267264140540/5279916682", size, AdPosition.Bottom);
+        #if UNITY_IOS
+            bannerView = new BannerView("ca-app-pub-3422267264140540/7214962530", size, AdPosition.Bottom);
+        #elif UNITY_ANDROID
+            bannerView = new BannerView("ca-app-pub-3422267264140540/5279916682", size, AdPosition.Bottom);
+        #endif
         // Create an empty ad request.
         // Register the events
         AdRequest request = new AdRequest.Builder().Build();
@@ -214,5 +222,5 @@ public class TitleManager : MonoBehaviour
         interstitial.Destroy();
         interstitial = new InterstitialAd("ca - app - pub - 3940256099942544 / 1033173712");
     }
-    #endregion
+#endregion
 }
