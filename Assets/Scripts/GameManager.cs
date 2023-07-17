@@ -69,7 +69,8 @@ public class GameManager : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.I))
             {
-                ScreenCapture.CaptureScreenshot("screenshot.png", 1);
+
+                ScreenCapture.CaptureScreenshot("screenshot3.png", 1);
             }
             if (Input.GetKeyDown(KeyCode.X) || Input.GetKeyDown(KeyCode.K) || shoot) //shoot
             {

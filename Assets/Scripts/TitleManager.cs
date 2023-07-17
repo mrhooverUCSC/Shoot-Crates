@@ -37,6 +37,10 @@ public class TitleManager : MonoBehaviour
             Instance = this;
         }
     }
+    private void Update()
+    {
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -81,7 +85,7 @@ public class TitleManager : MonoBehaviour
             practiceModeText.color = Color.red;
         }
 
-        //ScreenCapture.CaptureScreenshot("screenshot.png", 1);
+        //ScreenCapture.CaptureScreenshot("titlescreenscreenshot.png", 1);
 
     }
 
