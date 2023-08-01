@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject victoryCanvas; //maybe make one serializefield, and get by tag/child in it?
     [SerializeField] GameObject lossCanvas;
     [SerializeField] GameObject startCanvas;
+    [SerializeField] Image turnsImage;
     [SerializeField] Text turnText;
     private int turnsRemaining;
     Tile emptyTile = new Tile(tileContents.EMPTY, null, null); //no object for these, so make them once then apply them as needed for brevity
@@ -31,16 +32,12 @@ public class GameManager : MonoBehaviour
     private gameStatus status;
     private void Start()
     {
-        if(TitleManager.practiceMode == false)
+        turnsRemaining = mapM.turns;
+        if (TitleManager.practiceMode == true)
         {
-            turnsRemaining = mapM.turns;
-            turnText.text = "Turns Remaining: " + turnsRemaining.ToString();
+            turnsImage = Resources.Load<Image>("PracticeA");
         }
-        else
-        {
-            turnsRemaining = int.MaxValue;
-            turnText.text = "Practice Mode";
-        }
+        turnText.text = "" + turnsRemaining.ToString();
     }
     void Update()
     {
@@ -209,8 +206,12 @@ public class GameManager : MonoBehaviour
             if (tiles[1].contents == tileContents.CRATE)
             {
                 crate = true;
+                mapM.map[positions[2].x, positions[2].y].block.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("PitCrate"); //make the depressed pit image
             }
-            Destroy(mapM.map[positions[2].x, positions[2].y].block);
+            else
+            {
+                mapM.map[positions[2].x, positions[2].y].block.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("PitBlock"); //make the depressed pit image
+            }
             mapM.map[positions[2].x, positions[2].y] = emptyTile; //move block over
             Destroy(mapM.map[positions[1].x, positions[1].y].block);
             mapM.map[positions[1].x, positions[1].y] = mapM.map[positions[0].x, positions[0].y]; //move player over 
@@ -262,12 +263,10 @@ public class GameManager : MonoBehaviour
                 breakCrate();
             }
         }
-        if(TitleManager.practiceMode == false)
-        {
-            turnsRemaining--;
-            turnText.text = "Turns Remaining: " + turnsRemaining.ToString();
-        }
-        if (turnsRemaining == 0 && status != gameStatus.WIN)
+        
+        turnsRemaining--;
+        turnText.text = "" + turnsRemaining.ToString();
+        if (turnsRemaining == 0 && TitleManager.practiceMode == false && status != gameStatus.WIN)
         {
             status = gameStatus.LOSS;
             mapM.player.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, .5f);

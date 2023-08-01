@@ -25,6 +25,8 @@ public class TitleManager : MonoBehaviour
     bool loadData = true;
 
     private BannerView bannerView;
+    private string bannerAdIdentifier;
+    private AdSize bannerAdSize;
     private InterstitialAd interstitial;
     private void Awake()
     {
@@ -36,6 +38,20 @@ public class TitleManager : MonoBehaviour
         {
             Instance = this;
         }
+        //set bannerAdIdentifier based upon situation
+        if (Application.isEditor)
+        {
+            bannerAdIdentifier = "ca-app-pub-3940256099942544/6300978111";
+        }
+        else
+        {
+            #if UNITY_IOS
+                bannerAdIdentifier = "ca-app-pub-3422267264140540/7214962530";
+            #elif UNITY_ANDROID
+                bannerAdIdentifier = "ca-app-pub-3422267264140540/5279916682";
+            #endif
+        }
+        bannerAdSize = AdSize.GetCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(AdSize.FullWidth);
     }
     private void Update()
     {
@@ -86,7 +102,6 @@ public class TitleManager : MonoBehaviour
         }
 
         //ScreenCapture.CaptureScreenshot("titlescreenscreenshot.png", 1);
-
     }
 
 
@@ -181,20 +196,12 @@ public class TitleManager : MonoBehaviour
     #region ads
     public void requestBanner()
     {
-        if (bannerView != null)
+        if (bannerView != null) //break the current ad if it exists
         {
             bannerView.Destroy();
         }
-        //android banner ad id: "ca-app-pub-3422267264140540/5279916682"
-        //test banner ad id: "ca-app-pub-3940256099942544/6300978111"
-        //iOS banner ad id: "ca-app-pub-3422267264140540/7214962530"
-        AdSize size = AdSize.GetCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(AdSize.FullWidth);
-        #if UNITY_IOS
-            bannerView = new BannerView("ca-app-pub-3422267264140540/7214962530", size, AdPosition.Bottom);
-        #elif UNITY_ANDROID
-            bannerView = new BannerView("ca-app-pub-3422267264140540/5279916682", size, AdPosition.Bottom);
-        #endif
-        // Create an empty ad request.
+        Debug.Log(bannerAdIdentifier + " | " + bannerAdSize);
+        bannerView = new BannerView(bannerAdIdentifier, bannerAdSize, AdPosition.Bottom);
         // Register the events
         AdRequest request = new AdRequest.Builder().Build();
         this.bannerView.OnBannerAdLoaded += this.HandleOnAdLoaded;
@@ -224,7 +231,7 @@ public class TitleManager : MonoBehaviour
     public void RequestInterstitial()
     {
         interstitial.Destroy();
-        interstitial = new InterstitialAd("ca - app - pub - 3940256099942544 / 1033173712");
+        //interstitial = new InterstitialAd("ca - app - pub - 3940256099942544 / 1033173712");
     }
 #endregion
 }
