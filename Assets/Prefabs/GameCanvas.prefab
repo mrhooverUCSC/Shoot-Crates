@@ -279,7 +279,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 6751187442013754768}
         m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: mobileMoveUp
+        m_MethodName: MoveUp
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -356,7 +356,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_Font: {fileID: 12800000, guid: fc90ecc265958e0429e93c82baa9df3f, type: 3}
     m_FontSize: 30
     m_FontStyle: 0
     m_BestFit: 0
@@ -1870,7 +1870,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 6751187442013754768}
         m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: mobileShoot
+        m_MethodName: Shoot
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2003,7 +2003,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 6751187442013754768}
         m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: mobileMoveDown
+        m_MethodName: MoveDown
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2269,7 +2269,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 6751187442013754768}
         m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: mobileMoveLeft
+        m_MethodName: MoveLeft
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2402,7 +2402,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 6751187442013754768}
         m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: mobileMoveRight
+        m_MethodName: MoveRight
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

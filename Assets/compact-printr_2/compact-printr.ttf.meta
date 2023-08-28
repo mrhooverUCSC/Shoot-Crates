@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 960e2bfab5c69444b9fe19ae21badc0a
+guid: fc90ecc265958e0429e93c82baa9df3f
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
@@ -9,7 +9,7 @@ TrueTypeFontImporter:
   characterPadding: 1
   includeFontData: 1
   fontNames:
-  - Guarding the Aerodrome
+  - Compact Printr
   fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0

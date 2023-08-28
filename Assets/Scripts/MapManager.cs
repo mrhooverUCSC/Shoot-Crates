@@ -25,9 +25,9 @@ public class MapManager : MonoBehaviour
     void Start()
     {
         map = new Tile[zone.x,zone.y]; //construct the 2D array based on the size given.
-        for(int i = 0; i < zone.x; ++i)
+        for(int i = 1; i < zone.x - 1; ++i) //fill the inside with empties
         {
-            for(int j = 0; j < zone.y; ++j)
+            for(int j = 1; j < zone.y - 1; ++j)
             {
                 map[i, j] = new Tile(tileContents.EMPTY, null, null);
             }
@@ -63,5 +63,55 @@ public class MapManager : MonoBehaviour
             else if(go.tag == "Pit")
                 map[(int)go.position.x, (int)go.position.y] = new Tile(tileContents.PIT, go.gameObject, null);
         }
+        Debug.Log("map loaded");
+    }
+
+    public void CopyMap(Tile[,] m)
+    {
+        for(int i = 0; i < zone.x; ++i)
+        {
+            for(int j = 0; j < zone.y; ++j)
+            {
+                map[i, j] = m[i, j];
+            }
+        }
+    }
+
+    public bool ShootHeuristic() //used in auto heuristic. 
+    {
+        //if no crates to the right, don't shoot
+        foreach (GameObject go in GameObject.FindGameObjectsWithTag("Crate"))
+        {
+            if(go.transform.position.x > playerLoc.x)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public bool WallHere(TurnChoice t)
+    {
+        if(t == TurnChoice.SHOOT && map[playerLoc.x + 1, playerLoc.y].contents == tileContents.BLOCK)
+        {
+            return true;
+        }
+        if((t == TurnChoice.SHOOT || t == TurnChoice.RIGHT) && map[playerLoc.x + 1, playerLoc.y].contents == tileContents.WALL)
+        {
+            return true;
+        }
+        else if(t == TurnChoice.UP && map[playerLoc.x, playerLoc.y + 1].contents == tileContents.WALL)
+        {
+            return true;
+        }
+        else if (t == TurnChoice.DOWN && map[playerLoc.x, playerLoc.y - 1].contents == tileContents.WALL)
+        {
+            return true;
+        }
+        else if (t == TurnChoice.LEFT && map[playerLoc.x - 1, playerLoc.y].contents == tileContents.WALL)
+        {
+            return true;
+        }
+        return false;
     }
 }
