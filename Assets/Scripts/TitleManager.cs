@@ -25,7 +25,7 @@ public class TitleManager : MonoBehaviour
     [SerializeField] GameObject debug1;
     bool loadData = true;
 
-    private BannerView bannerView;
+    private BannerView bannerAd;
     private string bannerAdIdentifier;
     private AdSize bannerAdSize;
 
@@ -58,7 +58,7 @@ public class TitleManager : MonoBehaviour
         if (Application.isEditor)
         {
             bannerAdIdentifier = "ca-app-pub-3940256099942544/6300978111";
-            interstitialAdIdentifier = "ca-app-pub-3940256099942544/4411468910";
+            interstitialAdIdentifier = "ca-app-pub-3940256099942544/1033173712";
             //auto = true;
             if (auto)
             {
@@ -68,12 +68,12 @@ public class TitleManager : MonoBehaviour
         else
         {
             #if UNITY_IOS
-                bannerAdIdentifier = "ca-app-pub-3422267264140540/7214962530";
+                bannerAdIdentifier = "ca-app-pub-3940256099942544/2934735716";
                 interstitialAdIdentifier = "ca-app-pub-3940256099942544/4411468910";
 
             #elif UNITY_ANDROID
-                bannerAdIdentifier = "ca-app-pub-3422267264140540/5279916682";
-                interstitialAdIdentifier = "ca-app-pub-3940256099942544/4411468910";
+                bannerAdIdentifier = "ca-app-pub-3940256099942544/6300978111";
+                interstitialAdIdentifier = "ca-app-pub-3940256099942544/1033173712";
             #endif
         }
         bannerAdSize = AdSize.GetCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(AdSize.FullWidth);
@@ -87,10 +87,7 @@ public class TitleManager : MonoBehaviour
         }
         if (loadData)
         {
-            if(SystemInfo.deviceType == DeviceType.Handheld)
-            {
-                MobileAds.Initialize(initStatus => { });
-            }
+            MobileAds.Initialize(initStatus => { Debug.Log("Ads Initialized"); });
             //load level data
             if (!System.IO.File.Exists(Application.persistentDataPath + "/SCData.json")) //if no data file, make one
             {
@@ -105,9 +102,14 @@ public class TitleManager : MonoBehaviour
                 Debug.Log("loading file, saved number is " + highestLevel);
             }
             loadData = false;
+            //PreLoadInterstitial();
+        }
+        else
+        {
+            //Debug.Log("TitleScreen() calling ShowIntersitial()");
+            //ShowIntersitial();
         }
         requestBanner();
-        //RequestInterstitial();
         Button[] b = buttons.transform.GetComponentsInChildren<Button>();
         //Debug.Log(b.Length);
         for (int i = 0; i < highestLevel - 1; ++i)
@@ -161,7 +163,7 @@ public class TitleManager : MonoBehaviour
         moves = temp;
         autoOut = false;
         SceneManager.LoadScene("Level" + level.ToString(), LoadSceneMode.Additive);//try
-        Debug.Log(string.Join("", temp));
+        //Debug.Log(string.Join("", temp));
         yield return new WaitUntil(() => autoOut == true);
         //if good, quit
         if (autoSuccess)
@@ -204,13 +206,9 @@ public class TitleManager : MonoBehaviour
     #region menu functions
     public void EnterLevel(int l)
     {
-        if(bannerView != null)
+        if(bannerAd != null)
         {
-            bannerView.Destroy();
-        }
-        if(interAd != null)
-        {
-            interAd.Destroy();
+            bannerAd.Destroy();
         }
         Debug.Log("entering level " + l + ", highest level is " + highestLevel);
         level = l;
@@ -231,14 +229,14 @@ public class TitleManager : MonoBehaviour
     }
     public void TitleScreen()
     {
-        SceneManager.LoadScene("Title");
         if (auto)
         {
+            SceneManager.LoadScene("Title");
             autoOut = true;
         }
         else
         {
-            RequestIntersitial();
+            SceneManager.LoadScene("Title");
         }
         System.IO.File.WriteAllText(Application.persistentDataPath + "/SCData.json", highestLevel.ToString());
     }
@@ -313,33 +311,53 @@ public class TitleManager : MonoBehaviour
     #region ads
     public void requestBanner()
     {
-        if (bannerView != null) //break the current ad if it exists
+        if (bannerAd != null) //break the current ad if it exists
         {
-            bannerView.Destroy();
+            bannerAd.Destroy();
+            bannerAd = null;
         }
         Debug.Log(bannerAdIdentifier + " | " + bannerAdSize);
-        bannerView = new BannerView(bannerAdIdentifier, bannerAdSize, AdPosition.Bottom);
+        bannerAd = new BannerView(bannerAdIdentifier, bannerAdSize, AdPosition.Bottom);
         // Register the events
         AdRequest request = new AdRequest.Builder().Build();
-        this.bannerView.OnBannerAdLoaded += this.HandleOnAdLoaded;
-        this.bannerView.OnBannerAdLoadFailed += this.HandleOnAdFailedToLoad;
-        this.bannerView.OnAdClicked += this.HandleOnAdOpened;
-        //this.bannerView.on += this.HandleAdClosed; //i don't think banner ads can be closed
+        bannerAd.OnBannerAdLoaded += this.HandleOnBannerAdLoaded;
+        bannerAd.OnBannerAdLoadFailed += this.HandleOnBannerAdFailedToLoad;
+        bannerAd.OnAdClicked += this.HandleOnBannerAdOpened;
+        //this.bannerAd.on += this.HandleAdClosed; //i don't think banner ads can be closed
 
         // Load the banner with the request.
-        bannerView.LoadAd(request);
+        bannerAd.LoadAd(request);
     }
 
-    private void RequestIntersitial()
+    #region BannerAdAddOnFunctions
+    public void HandleOnBannerAdLoaded()
     {
-        if(interAd != null)
+        MonoBehaviour.print("----HandleAdLoaded BannerAd event received----");
+    }
+
+    public void HandleOnBannerAdFailedToLoad(LoadAdError error)
+    {
+        MonoBehaviour.print("----HandleFailedToReceiveAd BannerAd event received with message: "
+                            + error.GetMessage() + "----");
+    }
+
+    public void HandleOnBannerAdOpened()
+    {
+        MonoBehaviour.print("----HandleAdOpened BannerAd event received----");
+    }
+    #endregion
+
+    private void PreLoadInterstitial() //loads a new interstitial ad into interAd
+    {
+        if (interAd != null)
         {
             interAd.Destroy();
+            interAd = null;
         }
-        Debug.Log("Intersitial Ad : " + bannerAdIdentifier);
+        Debug.Log("Preload Intersitial Ad : " + interstitialAdIdentifier);
 
         AdRequest request = new AdRequest();
-        request.Keywords.Add("unity-admob-sample");
+        request.Keywords.Add("unity-admob-interstitial");
 
         InterstitialAd.Load(interstitialAdIdentifier, request,
                       (InterstitialAd ad, LoadAdError error) =>
@@ -353,26 +371,56 @@ public class TitleManager : MonoBehaviour
                           }
 
                           Debug.Log("Interstitial ad loaded with response : "
-                                    + ad.GetResponseInfo());
+                                    + ad.GetResponseInfo().ToString());
 
                           interAd = ad;
                       });
+
+        // Raised when an impression is recorded for an ad.
+        interAd.OnAdImpressionRecorded += () =>
+        {
+            Debug.Log("Interstitial ad recorded an impression.");
+        };
+        // Raised when a click is recorded for an ad.
+        interAd.OnAdClicked += () =>
+        {
+            Debug.Log("Interstitial ad was clicked.");
+        };
+        // Raised when an ad opened full screen content.
+        interAd.OnAdFullScreenContentOpened += () =>
+        {
+            Debug.Log("Interstitial ad full screen content opened.");
+        };
+        interAd.OnAdFullScreenContentClosed += () =>
+        {
+            Debug.Log("Interstitial Ad full screen content closed.");
+
+            // Reload the ad so that we can show another as soon as possible.
+            PreLoadInterstitial();
+        };
+        // Raised when the ad failed to open full screen content.
+        interAd.OnAdFullScreenContentFailed += (AdError error) =>
+        {
+            Debug.LogError("Interstitial ad failed to open full screen content " +
+                           "with error : " + error);
+
+            // Reload the ad so that we can show another as soon as possible.
+            PreLoadInterstitial();
+        };
+
     }
 
-    public void HandleOnAdLoaded()
+    private void ShowIntersitial()
     {
-        MonoBehaviour.print("----HandleAdLoaded event received----");
-    }
-
-    public void HandleOnAdFailedToLoad(LoadAdError error)
-    {
-        MonoBehaviour.print("----HandleFailedToReceiveAd event received with message: "
-                            + error.GetMessage() + "----");
-    }
-
-    public void HandleOnAdOpened()
-    {
-        MonoBehaviour.print("----HandleAdOpened event received----");
+        if (interAd != null && interAd.CanShowAd())
+        {
+            Debug.Log("Showing interstitial ad.");
+            interAd.Show();
+        }
+        else
+        {
+            Debug.LogError("Interstitial ad is equal to null or not ready.");
+        }
     }
 #endregion
 }

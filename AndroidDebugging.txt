@@ -1,3 +1,5 @@
 cd C:\Users\Matt Hoover\AppData\Local\Android\Sdk\platform-tools
 
 adb logcat -s Unity ActivityManager PackageManager dalvikvm DEBUG
+
+TURN OFF ADBLOCKER!!

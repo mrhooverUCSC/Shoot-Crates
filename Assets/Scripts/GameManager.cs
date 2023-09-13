@@ -298,7 +298,7 @@ public class GameManager : MonoBehaviour
                 mapM.map[(int)b.transform.position.x, (int)b.transform.position.y].bullet = null;
                 b.transform.position = b.transform.position + Vector3.right;
             }
-            else if ((next == tileContents.WALL) || (next == tileContents.BLOCK))
+            else if ((next == tileContents.WALL) || (next == tileContents.BLOCK) || (next == tileContents.PLAYER))
             {
                 mapM.map[(int)b.transform.position.x, (int)b.transform.position.y].bullet = null;
                 Destroy(b);
@@ -416,6 +416,10 @@ public class GameManager : MonoBehaviour
     #region turnOptions
     public void Shoot()
     {
+        if (status == gameStatus.LOSS)
+        {
+            return;
+        }
         if (mapM.WallHere(TurnChoice.SHOOT))
         {
             return;
@@ -445,6 +449,10 @@ public class GameManager : MonoBehaviour
     }
     public void MoveDown()
     {
+        if(status == gameStatus.LOSS)
+        {
+            return;
+        }
         List<Tile> tiles = new List<Tile>();
         List<Vector2Int> locations = new List<Vector2Int>();
         for (int i = 0; true; i++)
@@ -460,6 +468,10 @@ public class GameManager : MonoBehaviour
     }
     public void MoveUp()
     {
+        if (status == gameStatus.LOSS)
+        {
+            return;
+        }
         List<Tile> tiles = new List<Tile>();
         List<Vector2Int> locations = new List<Vector2Int>();
         for (int i = 0; true; i++)
@@ -476,6 +488,10 @@ public class GameManager : MonoBehaviour
 
     public void MoveLeft()
     {
+        if (status == gameStatus.LOSS)
+        {
+            return;
+        }
         List<Tile> tiles = new List<Tile>();
         List<Vector2Int> locations = new List<Vector2Int>();
         for (int i = 0; true; i++)
@@ -492,6 +508,10 @@ public class GameManager : MonoBehaviour
 
     public void MoveRight()
     {
+        if (status == gameStatus.LOSS)
+        {
+            return;
+        }
         List<Tile> tiles = new List<Tile>();
         List<Vector2Int> locations = new List<Vector2Int>();
         for (int i = 0; true; i++)
