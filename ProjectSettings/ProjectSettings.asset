@@ -154,6 +154,7 @@ PlayerSettings:
   androidMaxAspectRatio: 2.1
   applicationIdentifier:
     Android: com.HooverGames.ShootCrates
+    Standalone: com.HooverGames.Shoot-Crates
     iPhone: com.hoovergames.shootcrates
   buildNumber:
     Standalone: 0
@@ -273,7 +274,7 @@ PlayerSettings:
   - m_BuildTarget: 
     m_Icons:
     - serializedVersion: 2
-      m_Icon: {fileID: 2800000, guid: a2813a7beaef895469b8298a9881d45b, type: 3}
+      m_Icon: {fileID: 2800000, guid: a5d4f490d6abf024aba90ec039a63373, type: 3}
       m_Width: 128
       m_Height: 128
       m_Kind: 0

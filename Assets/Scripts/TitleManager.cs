@@ -14,8 +14,11 @@ public class TitleManager : MonoBehaviour
     public static int level;
     public static int highestLevel;
     public static bool practiceMode = false;
+    public static bool menuAuto = true;
     [SerializeField] Text practiceModeText;
     [SerializeField] GameObject Canvas;
+    [SerializeField] GameObject menuButtons;
+    [SerializeField] TextMeshProUGUI tapToStart;
     [SerializeField] GameObject buttons;
     [SerializeField] GameObject instructions;
     [SerializeField] GameObject credits;
@@ -23,7 +26,6 @@ public class TitleManager : MonoBehaviour
     [SerializeField] GameObject levelSelect;
 
     [SerializeField] GameObject debug1;
-    bool loadData = true;
 
     private BannerView bannerAd;
     private string bannerAdIdentifier;
@@ -31,6 +33,7 @@ public class TitleManager : MonoBehaviour
 
     private string interstitialAdIdentifier;
     private InterstitialAd interAd;
+
 
 
     //auto player stuff
@@ -54,7 +57,7 @@ public class TitleManager : MonoBehaviour
         {
             Instance = this;
         }
-        //set bannerAdIdentifier based upon situation
+        //set banner and intsitial ad ids based upon situation
         if (Application.isEditor)
         {
             bannerAdIdentifier = "ca-app-pub-3940256099942544/6300978111";
@@ -81,11 +84,11 @@ public class TitleManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if(movesQueue != null)
+        if(movesQueue != null) //if in AI, don't do all that setup stuff
         {
             Canvas.SetActive(false);
         }
-        if (loadData)
+        else
         {
             MobileAds.Initialize(initStatus => { Debug.Log("Ads Initialized"); });
             //load level data
@@ -101,34 +104,50 @@ public class TitleManager : MonoBehaviour
                 highestLevel = int.Parse(temp);
                 Debug.Log("loading file, saved number is " + highestLevel);
             }
-            loadData = false;
             //PreLoadInterstitial();
-        }
-        else
-        {
             //Debug.Log("TitleScreen() calling ShowIntersitial()");
             //ShowIntersitial();
-        }
-        requestBanner();
-        Button[] b = buttons.transform.GetComponentsInChildren<Button>();
-        //Debug.Log(b.Length);
-        for (int i = 0; i < highestLevel - 1; ++i)
-        {
-            b[i].interactable = true;
-        }
+            requestBanner();
+            Button[] b = buttons.transform.GetComponentsInChildren<Button>();
+            //Debug.Log(b.Length);
+            for (int i = 0; i < highestLevel - 1; ++i)
+            {
+                b[i].interactable = true;
+            }
 
-        if (practiceMode == true)
-        {
-            practiceModeText.text = "Practice Mode Enabled";
-            practiceModeText.color = Color.green;
-        }
-        else
-        {
-            practiceModeText.text = "Practice Mode Disabled";
-            practiceModeText.color = Color.red;
-        }
+            //Load background
+            menuAuto = true;
+            SceneManager.LoadScene("MenuAuto", LoadSceneMode.Additive);
 
+            if (practiceMode == true)
+            {
+                practiceModeText.text = "Practice Mode Enabled";
+                practiceModeText.color = Color.green;
+            }
+            else
+            {
+                practiceModeText.text = "Practice Mode Disabled";
+                practiceModeText.color = Color.red;
+            }
+        }
         //ScreenCapture.CaptureScreenshot("titlescreenscreenshot.png", 1);
+    }
+
+    public void Update()
+    {
+        foreach (Touch t in Input.touches)
+        {
+            if (t.phase == TouchPhase.Began && menuButtons.activeSelf == false)
+            {
+                menuButtons.SetActive(true);
+                tapToStart.gameObject.SetActive(false);
+            }
+        }
+        if (Input.GetKeyDown(KeyCode.X) && menuButtons.activeSelf == false) // keyboard or touch to continue
+        {
+            menuButtons.SetActive(true);
+            tapToStart.gameObject.SetActive(false);
+        }
     }
 
     public IEnumerator AutoStep()
@@ -212,6 +231,7 @@ public class TitleManager : MonoBehaviour
         }
         Debug.Log("entering level " + l + ", highest level is " + highestLevel);
         level = l;
+        menuAuto = false;
         if (auto)
         {
             movesQueue = new Queue<List<TurnChoice>>();
@@ -423,6 +443,10 @@ public class TitleManager : MonoBehaviour
         }
     }
 #endregion
+}
+
+internal class TextMeshProUI
+{
 }
 
 public enum TurnChoice{

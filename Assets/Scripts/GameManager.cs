@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -16,6 +18,8 @@ public class GameManager : MonoBehaviour
     public static int turnsTotal;
     Tile emptyTile = new Tile(tileContents.EMPTY, null, null); //no object for these, so make them once then apply them as needed for brevity
 
+    int autoLastMove = 0;
+
     // list of positions visited since shooting/moving a block. if you come back to a tile before shooting/moving, prune this branch.
     List<Vector2Int> visited;
 
@@ -30,6 +34,7 @@ public class GameManager : MonoBehaviour
     private gameStatus status;
     private void Start()
     {
+        Debug.Log("gamemanager Start");
         turnsRemaining = mapM.turns;
         turnsTotal = mapM.turns;
         if (TitleManager.practiceMode == true)
@@ -41,6 +46,60 @@ public class GameManager : MonoBehaviour
         {
             StartCoroutine(Solver());
         }
+        if (TitleManager.menuAuto == true)
+        {
+            StartCoroutine(MenuAutoStep());
+        }
+    }
+
+    private IEnumerator MenuAutoStep()
+    {
+        float temp = Random.Range(0.5f, 1.5f);
+        int temp2 = Random.Range(0, 6);
+        do
+        {
+            temp2 = Random.Range(0, 6);
+        } while (autoLastMove == 0 && temp2 == 0);
+        yield return new WaitForSeconds(temp);
+        switch (temp2)
+        {
+            case 0:Shoot();
+                break;
+            case 1:MoveLeft();
+                break;
+            case 2: MoveRight();
+                break;
+            case 3: MoveUp();
+                break;
+            case 4: MoveDown();
+                break;
+        }
+        autoLastMove = temp2;
+        do
+        {
+            temp2 = Random.Range(0, 6);
+        } while (autoLastMove == 0 && temp2 == 0);
+        yield return new WaitForSeconds(1.5f - temp);
+        switch (temp2)
+        {
+            case 0:
+                Shoot();
+                break;
+            case 1:
+                MoveLeft();
+                break;
+            case 2:
+                MoveRight();
+                break;
+            case 3:
+                MoveUp();
+                break;
+            case 4:
+                MoveDown();
+                break;
+        }
+        autoLastMove = temp2;
+        StartCoroutine(MenuAutoStep());
     }
 
     private IEnumerator Solver()
@@ -127,6 +186,7 @@ public class GameManager : MonoBehaviour
             }
             if (Input.GetKeyDown(KeyCode.X) || justTapped == true) // keyboard or touch to continue
             {
+                justTapped = false;
                 status = gameStatus.GO;
                 startCanvas.SetActive(false);
             }
@@ -160,7 +220,14 @@ public class GameManager : MonoBehaviour
         }
         else if (status == gameStatus.WIN)
         {
-            if (Input.GetKeyDown(KeyCode.X) || Input.touchCount > 0) {
+            foreach (Touch t in Input.touches)
+            {
+                if (t.phase == TouchPhase.Began)
+                {
+                    nextLevel();
+                }
+            }
+            if (Input.GetKeyDown(KeyCode.X)) {
                 nextLevel();
             }
         }
@@ -416,7 +483,7 @@ public class GameManager : MonoBehaviour
     #region turnOptions
     public void Shoot()
     {
-        if (status == gameStatus.LOSS)
+        if (status == gameStatus.LOSS || turnsRemaining == 0)
         {
             return;
         }
@@ -449,7 +516,7 @@ public class GameManager : MonoBehaviour
     }
     public void MoveDown()
     {
-        if(status == gameStatus.LOSS)
+        if(status == gameStatus.LOSS || turnsRemaining == 0)
         {
             return;
         }
@@ -468,7 +535,7 @@ public class GameManager : MonoBehaviour
     }
     public void MoveUp()
     {
-        if (status == gameStatus.LOSS)
+        if (status == gameStatus.LOSS || turnsRemaining == 0)
         {
             return;
         }
@@ -488,7 +555,7 @@ public class GameManager : MonoBehaviour
 
     public void MoveLeft()
     {
-        if (status == gameStatus.LOSS)
+        if (status == gameStatus.LOSS || turnsRemaining == 0)
         {
             return;
         }
@@ -508,7 +575,7 @@ public class GameManager : MonoBehaviour
 
     public void MoveRight()
     {
-        if (status == gameStatus.LOSS)
+        if (status == gameStatus.LOSS || turnsRemaining == 0)
         {
             return;
         }
