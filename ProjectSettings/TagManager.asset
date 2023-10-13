@@ -12,6 +12,7 @@ TagManager:
   - LossCanvas
   - Bridge
   - Pit
+  - MenuButton
   layers:
   - Default
   - TransparentFX

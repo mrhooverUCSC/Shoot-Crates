@@ -266,49 +266,68 @@ public class TitleManager : MonoBehaviour
     {
         Application.Quit();
     }
+
+    //turn off the menu buttons for a quick second when the menu is moving around
+    public IEnumerator DisableMenuButtons()
+    {
+        foreach(GameObject b in GameObject.FindGameObjectsWithTag("MenuButton"))
+        {
+            b.GetComponent<Button>().interactable = false;
+        }
+        yield return new WaitForSeconds(.25f);
+        foreach (GameObject b in GameObject.FindGameObjectsWithTag("MenuButton"))
+        {
+            b.GetComponent<Button>().interactable = true;
+        }
+    }
+
     public void toggleInstructions()
     {
-        if(instructions.activeSelf == false)
+        StartCoroutine(DisableMenuButtons());
+        if(instructions.GetComponent<Animator>().GetBool("isOnScreen") == false)
         {
-            instructions.SetActive(true);
+            instructions.GetComponent<Animator>().SetBool("isOnScreen", true);
         }
         else
         {
-            instructions.SetActive(false);
+            instructions.GetComponent<Animator>().SetBool("isOnScreen", false);
         }
     }
     public void toggleCredits()
     {
-        if (credits.activeSelf == false)
+        StartCoroutine(DisableMenuButtons());
+        if (credits.GetComponent<Animator>().GetBool("isOnScreen") == false)
         {
-            credits.SetActive(true);
+            credits.GetComponent<Animator>().SetBool("isOnScreen", true);
         }
         else
         {
-            credits.SetActive(false);
+            credits.GetComponent<Animator>().SetBool("isOnScreen", false);
         }
     }
     public void toggleLegend()
     {
-        if (legend.activeSelf == false)
+        StartCoroutine(DisableMenuButtons());
+        if (legend.GetComponent<Animator>().GetBool("isOnScreen") == false)
         {
-            legend.SetActive(true);
+            legend.GetComponent<Animator>().SetBool("isOnScreen", true);
         }
         else
         {
-            legend.SetActive(false);
+            legend.GetComponent<Animator>().SetBool("isOnScreen", false);
         }
 
     }
     public void toggleLevelSelect()
     {
-        if (levelSelect.activeSelf == false)
+        StartCoroutine(DisableMenuButtons());
+        if (levelSelect.GetComponent<Animator>().GetBool("isOnScreen") == false)
         {
-            levelSelect.SetActive(true);
+            levelSelect.GetComponent<Animator>().SetBool("isOnScreen", true);
         }
         else
         {
-            levelSelect.SetActive(false);
+            levelSelect.GetComponent<Animator>().SetBool("isOnScreen", false);
         }
 
     }
