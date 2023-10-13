@@ -18,7 +18,7 @@ public class TitleManager : MonoBehaviour
     [SerializeField] Text practiceModeText;
     [SerializeField] GameObject Canvas;
     [SerializeField] GameObject menuButtons;
-    [SerializeField] TextMeshProUGUI tapToStart;
+    [SerializeField] GameObject menuSplash;
     [SerializeField] GameObject buttons;
     [SerializeField] GameObject instructions;
     [SerializeField] GameObject credits;
@@ -140,13 +140,15 @@ public class TitleManager : MonoBehaviour
             if (t.phase == TouchPhase.Began && menuButtons.activeSelf == false)
             {
                 menuButtons.SetActive(true);
-                tapToStart.gameObject.SetActive(false);
+                menuButtons.GetComponent<Animator>().SetBool("Appear", true);
+                menuSplash.GetComponent<Animator>().SetBool("Move", true);
             }
         }
         if (Input.GetKeyDown(KeyCode.X) && menuButtons.activeSelf == false) // keyboard or touch to continue
         {
             menuButtons.SetActive(true);
-            tapToStart.gameObject.SetActive(false);
+            menuButtons.GetComponent<Animator>().SetBool("Appear", true);
+            menuSplash.GetComponent<Animator>().SetBool("Move", true);
         }
     }
 

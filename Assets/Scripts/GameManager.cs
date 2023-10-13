@@ -191,7 +191,7 @@ public class GameManager : MonoBehaviour
                 startCanvas.SetActive(false);
             }
         }
-        else if (status == gameStatus.GO)
+        else if (status == gameStatus.GO && TitleManager.auto == false)
         {
             if (Input.GetKeyDown(KeyCode.I))
             {
