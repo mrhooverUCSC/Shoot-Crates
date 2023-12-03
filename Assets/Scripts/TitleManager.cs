@@ -130,25 +130,26 @@ public class TitleManager : MonoBehaviour
                 practiceModeText.color = Color.red;
             }
         }
-        //ScreenCapture.CaptureScreenshot("titlescreenscreenshot.png", 1);
     }
 
     public void Update()
     {
         foreach (Touch t in Input.touches)
         {
-            if (t.phase == TouchPhase.Began && menuButtons.activeSelf == false)
+            if (t.phase == TouchPhase.Began && menuButtons.GetComponent<Animator>().GetBool("Appear") == false)
             {
                 menuButtons.SetActive(true);
                 menuButtons.GetComponent<Animator>().SetBool("Appear", true);
-                menuSplash.GetComponent<Animator>().SetBool("Move", true);
             }
         }
-        if (Input.GetKeyDown(KeyCode.X) && menuButtons.activeSelf == false) // keyboard or touch to continue
+        if (Input.GetKeyDown(KeyCode.X) && menuButtons.GetComponent<Animator>().GetBool("Appear") == false) // keyboard or touch to continue
         {
             menuButtons.SetActive(true);
             menuButtons.GetComponent<Animator>().SetBool("Appear", true);
-            menuSplash.GetComponent<Animator>().SetBool("Move", true);
+        }
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            ScreenCapture.CaptureScreenshot(".9titlescreen.png", 1);
         }
     }
 
@@ -330,6 +331,11 @@ public class TitleManager : MonoBehaviour
             levelSelect.GetComponent<Animator>().SetBool("isOnScreen", false);
         }
 
+    }
+
+    public void OpenFeedback()
+    {
+        Application.OpenURL("https://forms.gle/uzeWqw9PntcuHHFd7");
     }
 
     public void togglePracticeMode()
