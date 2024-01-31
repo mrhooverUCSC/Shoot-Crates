@@ -21,6 +21,8 @@ public class TitleManager : MonoBehaviour
     [SerializeField] GameObject menuSplash;
     [SerializeField] GameObject buttons;
     [SerializeField] GameObject instructions;
+    [SerializeField] GameObject instructionsA;
+    [SerializeField] GameObject instructionsB;
     [SerializeField] GameObject credits;
     [SerializeField] GameObject legend;
     [SerializeField] GameObject levelSelect;
@@ -62,7 +64,7 @@ public class TitleManager : MonoBehaviour
         {
             bannerAdIdentifier = "ca-app-pub-3940256099942544/6300978111";
             interstitialAdIdentifier = "ca-app-pub-3940256099942544/1033173712";
-            //auto = true;
+            auto = false;
             if (auto)
             {
                 DontDestroyOnLoad(this);
@@ -288,11 +290,18 @@ public class TitleManager : MonoBehaviour
         if(instructions.GetComponent<Animator>().GetBool("isOnScreen") == false)
         {
             instructions.GetComponent<Animator>().SetBool("isOnScreen", true);
+            instructionsA.SetActive(true);
+            instructionsB.SetActive(false);
         }
         else
         {
             instructions.GetComponent<Animator>().SetBool("isOnScreen", false);
         }
+    }
+    public void nextInstructions()
+    {
+        instructionsA.SetActive(false);
+        instructionsB.SetActive(true); 
     }
     public void toggleCredits()
     {

@@ -42,13 +42,13 @@ public class GameManager : MonoBehaviour
             turnsImage = Resources.Load<Image>("PracticeA");
         }
         turnText.text = "" + turnsRemaining.ToString();
-        if(TitleManager.auto == true)
-        {
-            StartCoroutine(Solver());
-        }
         if (TitleManager.menuAuto == true)
         {
             StartCoroutine(MenuAutoStep());
+        }
+        else if (TitleManager.auto == true)
+        {
+            StartCoroutine(Solver());
         }
     }
 
