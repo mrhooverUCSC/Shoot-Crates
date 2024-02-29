@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 using GoogleMobileAds.Api;
 using System;
 using TMPro;
+using UnityEngine.EventSystems;
 
 public class TitleManager : MonoBehaviour
 {
@@ -19,15 +20,21 @@ public class TitleManager : MonoBehaviour
     [SerializeField] GameObject Canvas;
     [SerializeField] GameObject menuButtons;
     [SerializeField] GameObject menuSplash;
-    [SerializeField] GameObject buttons;
+    [SerializeField] GameObject buttons; //levelSelect buttons
+    [SerializeField] GameObject debug1;
+    [Header("MenuPages")]
+    [SerializeField] GameObject levelSelect;
+    [SerializeField] GameObject levelSelectButton;
     [SerializeField] GameObject instructions;
     [SerializeField] GameObject instructionsA;
     [SerializeField] GameObject instructionsB;
-    [SerializeField] GameObject credits;
+    [SerializeField] GameObject instructionsC;
+    [SerializeField] GameObject instructionsButton;
     [SerializeField] GameObject legend;
-    [SerializeField] GameObject levelSelect;
+    [SerializeField] GameObject legendButton;
+    [SerializeField] GameObject credits;
+    [SerializeField] GameObject creditsButton;
 
-    [SerializeField] GameObject debug1;
 
     private BannerView bannerAd;
     private string bannerAdIdentifier;
@@ -136,18 +143,21 @@ public class TitleManager : MonoBehaviour
 
     public void Update()
     {
-        foreach (Touch t in Input.touches)
+        if (menuButtons.GetComponent<Animator>().GetBool("Appear") == false) //if on the title screen and there is a touch/X press, pull up the main menu
         {
-            if (t.phase == TouchPhase.Began && menuButtons.GetComponent<Animator>().GetBool("Appear") == false)
+            if (Input.GetKeyDown(KeyCode.X))//if X press
             {
                 menuButtons.SetActive(true);
                 menuButtons.GetComponent<Animator>().SetBool("Appear", true);
             }
-        }
-        if (Input.GetKeyDown(KeyCode.X) && menuButtons.GetComponent<Animator>().GetBool("Appear") == false) // keyboard or touch to continue
-        {
-            menuButtons.SetActive(true);
-            menuButtons.GetComponent<Animator>().SetBool("Appear", true);
+            foreach (Touch t in Input.touches)//if touchscreen touch
+            {
+                if (t.phase == TouchPhase.Began)
+                {
+                    menuButtons.SetActive(true);
+                    menuButtons.GetComponent<Animator>().SetBool("Appear", true);
+                }
+            }
         }
         if (Input.GetKeyDown(KeyCode.I))
         {
@@ -290,18 +300,29 @@ public class TitleManager : MonoBehaviour
         if(instructions.GetComponent<Animator>().GetBool("isOnScreen") == false)
         {
             instructions.GetComponent<Animator>().SetBool("isOnScreen", true);
+            instructionsButton.GetComponent<Animator>().SetBool("isOnScreen", true);
             instructionsA.SetActive(true);
             instructionsB.SetActive(false);
+            instructionsC.SetActive(false);
         }
         else
         {
             instructions.GetComponent<Animator>().SetBool("isOnScreen", false);
+            instructionsButton.GetComponent<Animator>().SetBool("isOnScreen", false);
         }
     }
     public void nextInstructions()
     {
-        instructionsA.SetActive(false);
-        instructionsB.SetActive(true); 
+        if(instructionsA.activeSelf == true)
+        {
+            instructionsA.SetActive(false);
+            instructionsB.SetActive(true);
+        }
+        else if(instructionsB.activeSelf == true)
+        {
+            instructionsB.SetActive(false);
+            instructionsC.SetActive(true);
+        }
     }
     public void toggleCredits()
     {
@@ -309,10 +330,12 @@ public class TitleManager : MonoBehaviour
         if (credits.GetComponent<Animator>().GetBool("isOnScreen") == false)
         {
             credits.GetComponent<Animator>().SetBool("isOnScreen", true);
+            creditsButton.GetComponent<Animator>().SetBool("isOnScreen", true);
         }
         else
         {
             credits.GetComponent<Animator>().SetBool("isOnScreen", false);
+            creditsButton.GetComponent<Animator>().SetBool("isOnScreen", false);
         }
     }
     public void toggleLegend()
@@ -321,10 +344,12 @@ public class TitleManager : MonoBehaviour
         if (legend.GetComponent<Animator>().GetBool("isOnScreen") == false)
         {
             legend.GetComponent<Animator>().SetBool("isOnScreen", true);
+            legendButton.GetComponent<Animator>().SetBool("isOnScreen", true);
         }
         else
         {
             legend.GetComponent<Animator>().SetBool("isOnScreen", false);
+            legendButton.GetComponent<Animator>().SetBool("isOnScreen", false);
         }
 
     }
@@ -334,10 +359,12 @@ public class TitleManager : MonoBehaviour
         if (levelSelect.GetComponent<Animator>().GetBool("isOnScreen") == false)
         {
             levelSelect.GetComponent<Animator>().SetBool("isOnScreen", true);
+            levelSelectButton.GetComponent<Animator>().SetBool("isOnScreen", true);
         }
         else
         {
             levelSelect.GetComponent<Animator>().SetBool("isOnScreen", false);
+            levelSelectButton.GetComponent<Animator>().SetBool("isOnScreen", false);
         }
 
     }

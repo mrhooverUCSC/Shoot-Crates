@@ -1,0 +1,12 @@
+UI based, most everything is in the main canvas.
+
+"Manager" gameobject is not, it is the holder of the "TitleManager" script.
+
+Main parts of the mainmenu:
+There is a secondary scene loaded with the auto-play screenscaver.
+This is loaded through the Manager script.
+When the screen is tapped, the MainMenu appears, dragging with it its child buttons and pages.
+Then, the 4 buttons are layered on top of the Main Menu, but below their respective pages.
+In order to pull the buttons with the pages but not be a child of them to keep the visual order, the same animation plays on the 
+   buttons and the pages at the same time, so the Buttons have container objects that have the same position as the pages, such that
+   the animation affects them at the same speed at the same time.
