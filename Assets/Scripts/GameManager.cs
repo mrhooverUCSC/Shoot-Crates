@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject startCanvas;
     [SerializeField] Image turnsImage;
     [SerializeField] Text turnText;
+    [SerializeField] bool tutorialLevel;
     public static int turnsRemaining;
     public static int turnsTotal;
     Tile emptyTile = new Tile(tileContents.EMPTY, null, null); //no object for these, so make them once then apply them as needed for brevity
@@ -419,17 +420,7 @@ public class GameManager : MonoBehaviour
                     mapM.map[(int)b.transform.position.x + 1, (int)b.transform.position.y].bullet = b;
                     mapM.map[(int)b.transform.position.x, (int)b.transform.position.y].bullet = null;
                     b.transform.position = b.transform.position + Vector3.right;
-                    mapM.crateNum--;
-                    if (mapM.crateNum == 0 && TitleManager.practiceMode == false)
-                    {
-                        status = gameStatus.WIN;
-                        victoryCanvas.SetActive(true);
-                        if (TitleManager.level+1 > TitleManager.highestLevel)
-                        {
-                            TitleManager.highestLevel = TitleManager.level+1;
-                        }
-                        yield break;
-                    }
+                    breakCrate();
                 }
             }
             StartCoroutine(bulletEnd());
@@ -450,10 +441,6 @@ public class GameManager : MonoBehaviour
         {
             status = gameStatus.WIN;
             mapM.player.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, .5f);
-            if (TitleManager.level + 1 > TitleManager.highestLevel)
-            {
-                TitleManager.highestLevel = TitleManager.level + 1;
-            }
             victoryCanvas.SetActive(true);
         }
     }
@@ -461,8 +448,15 @@ public class GameManager : MonoBehaviour
     public void nextLevel()
     {
         TitleManager.level++;
-        System.IO.File.WriteAllText(Application.persistentDataPath + "/SCData.json", TitleManager.highestLevel.ToString());
-        TitleManager.Instance.EnterLevel(TitleManager.level);
+        TitleManager.Instance.UpdateSaveData(tutorialLevel, TitleManager.level);
+        if (tutorialLevel)
+        {
+            TitleManager.Instance.EnterTutorialLevel(TitleManager.level);
+        }
+        else
+        {
+            TitleManager.Instance.EnterLevel(TitleManager.level);
+        }
     }
     public void levelSelect()
     {
@@ -476,7 +470,14 @@ public class GameManager : MonoBehaviour
     }
     public void retry()
     {
-        TitleManager.Instance.EnterLevel(TitleManager.level);
+        if (tutorialLevel)
+        {
+            TitleManager.Instance.EnterTutorialLevel(TitleManager.level);
+        }
+        else
+        {
+            TitleManager.Instance.EnterLevel(TitleManager.level);
+        }
     }
 
     //mobile button functions

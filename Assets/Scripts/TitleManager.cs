@@ -13,14 +13,15 @@ public class TitleManager : MonoBehaviour
 {
     public static TitleManager Instance { get; private set; }
     public static int level;
-    public static int highestLevel;
+    SaveData saveData;
     public static bool practiceMode = false;
     public static bool menuAuto = true;
     [SerializeField] Text practiceModeText;
     [SerializeField] GameObject Canvas;
     [SerializeField] GameObject menuButtons;
     [SerializeField] GameObject menuSplash;
-    [SerializeField] GameObject buttons; //levelSelect buttons
+    [SerializeField] GameObject tutorialSelectButtons; //levelSelect buttons
+    [SerializeField] GameObject levelSelectButtons; //levelSelect buttons
     [SerializeField] GameObject debug1;
     [Header("MenuPages")]
     [SerializeField] GameObject levelSelect;
@@ -42,7 +43,6 @@ public class TitleManager : MonoBehaviour
 
     private string interstitialAdIdentifier;
     private InterstitialAd interAd;
-
 
 
     //auto player stuff
@@ -71,7 +71,6 @@ public class TitleManager : MonoBehaviour
         {
             bannerAdIdentifier = "ca-app-pub-3940256099942544/6300978111";
             interstitialAdIdentifier = "ca-app-pub-3940256099942544/1033173712";
-            auto = false;
             if (auto)
             {
                 DontDestroyOnLoad(this);
@@ -99,27 +98,14 @@ public class TitleManager : MonoBehaviour
         }
         else
         {
-            MobileAds.Initialize(initStatus => { Debug.Log("Ads Initialized"); });
-            //load level data
-            if (!System.IO.File.Exists(Application.persistentDataPath + "/SCData.json")) //if no data file, make one
+            saveData = DataManager.LoadData();             //load level data
+            Button[] b = tutorialSelectButtons.transform.GetComponentsInChildren<Button>();
+            for (int i = 0; i < saveData.tutorialLevelReached; ++i)
             {
-                Debug.Log("creating file");
-                // Create a file to write to.
-                System.IO.File.WriteAllText(Application.persistentDataPath + "/SCData.json", "1");
+                b[i].interactable = true;
             }
-            else //else load the data into highestLevel
-            {
-                string temp = System.IO.File.ReadAllText(Application.persistentDataPath + "/SCData.json");
-                highestLevel = int.Parse(temp);
-                Debug.Log("loading file, saved number is " + highestLevel);
-            }
-            //PreLoadInterstitial();
-            //Debug.Log("TitleScreen() calling ShowIntersitial()");
-            //ShowIntersitial();
-            requestBanner();
-            Button[] b = buttons.transform.GetComponentsInChildren<Button>();
-            //Debug.Log(b.Length);
-            for (int i = 0; i < highestLevel - 1; ++i)
+            b = levelSelectButtons.transform.GetComponentsInChildren<Button>();
+            for (int i = 0; i < saveData.levelReached; ++i)
             {
                 b[i].interactable = true;
             }
@@ -127,7 +113,6 @@ public class TitleManager : MonoBehaviour
             //Load background
             menuAuto = true;
             SceneManager.LoadScene("MenuAuto", LoadSceneMode.Additive);
-
             if (practiceMode == true)
             {
                 practiceModeText.text = "Practice Mode Enabled";
@@ -138,6 +123,13 @@ public class TitleManager : MonoBehaviour
                 practiceModeText.text = "Practice Mode Disabled";
                 practiceModeText.color = Color.red;
             }
+
+
+            MobileAds.Initialize(initStatus => { Debug.Log("Ads Initialized"); });
+            //PreLoadInterstitial();
+            //Debug.Log("TitleScreen() calling ShowIntersitial()");
+            //ShowIntersitial();
+            requestBanner();
         }
     }
 
@@ -165,6 +157,27 @@ public class TitleManager : MonoBehaviour
         }
     }
 
+    public SaveData GetSaveData()
+    {
+        return saveData;
+    }
+
+    public void UpdateSaveData(bool tutorialLevel, int level)
+    {
+        if (tutorialLevel && level > saveData.tutorialLevelReached && level < 5)
+        {
+            saveData.tutorialLevelReached = level;
+            DataManager.SaveData(saveData);
+
+        }
+        else if(!tutorialLevel && level > saveData.levelReached && level < 15)
+        {
+            saveData.levelReached = level;
+            DataManager.SaveData(saveData);
+        }
+    }
+
+    #region AutoFunctions
     public IEnumerator AutoStep()
     {
         if(movesQueue.Count == 0)
@@ -236,32 +249,48 @@ public class TitleManager : MonoBehaviour
             o.Add(t);
         }
     }
+    #endregion
 
-    #region menu functions
+    #region SceneManagement
     public void EnterLevel(int l)
     {
-        if(bannerAd != null)
+        LoadLevel(false, l);
+    }
+    public void EnterTutorialLevel(int l)
+    {
+        LoadLevel(true, l);
+    }
+    private void LoadLevel(bool tutorial, int l)
+    {
+        if (bannerAd != null)
         {
             bannerAd.Destroy();
         }
-        Debug.Log("entering level " + l + ", highest level is " + highestLevel);
         level = l;
-        menuAuto = false;
+        if (menuAuto)
+        {
+            menuAuto = false;
+            SceneManager.UnloadSceneAsync("MenuAuto");
+        }
         if (auto)
         {
             movesQueue = new Queue<List<TurnChoice>>();
             List<TurnChoice> temp = new List<TurnChoice>();
             movesQueue.Enqueue(temp);
-
             Canvas.SetActive(false);
             Debug.Log("start auto");
             StartCoroutine(AutoStep());
         }
-        else
+        else if(!tutorial)
         {
             SceneManager.LoadScene("Level" + l.ToString());
         }
+        else
+        {
+            SceneManager.LoadScene("Tutorial" + l.ToString());
+        }
     }
+
     public void TitleScreen()
     {
         if (auto)
@@ -273,13 +302,15 @@ public class TitleManager : MonoBehaviour
         {
             SceneManager.LoadScene("Title");
         }
-        System.IO.File.WriteAllText(Application.persistentDataPath + "/SCData.json", highestLevel.ToString());
+        DataManager.SaveData(saveData);
     }
     public void Quit()
     {
         Application.Quit();
     }
+    #endregion
 
+    #region menu functions
     //turn off the menu buttons for a quick second when the menu is moving around
     public IEnumerator DisableMenuButtons()
     {
